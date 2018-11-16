@@ -8,3 +8,6 @@ Test Framework: pytest
 
 def pencil():
     return pencil
+
+def paper():
+    return paper
