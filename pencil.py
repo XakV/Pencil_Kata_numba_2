@@ -6,22 +6,26 @@ Requirements: https://github.com/PillarTechnology/kata-pencil-durability
 Test Framework: pytest
 '''
 
-# Pencil is a writing implement
 
-class Pencil(object):
+class Pencil:
+    """A Pencil is a tool for writing and drawing"""
+
     def pencil(self):
+        """The base object of pencil"""
         return Pencil.pencil
 
     def writes(self):
+        """A pencil that can be used for writing."""
         return Pencil.writes
 
 
-# Paper is the surface the pencil creates text on
-
-class Paper(object):
+class Paper:
+    """Paper is the given medium for writing"""
 
     def paper(self):
+        """Base object for paper medium"""
         return Paper.paper
 
     def text(self):
+        """Text is created by a pencil writing on paper"""
         return Paper.text
