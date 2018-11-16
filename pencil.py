@@ -12,11 +12,11 @@ class Pencil:
 
     def pencil(self):
         """The base object of pencil"""
-        return Pencil.pencil
+        return self.pencil
 
     def writes(self):
         """A pencil that can be used for writing."""
-        return Pencil.writes
+        return self.writes
 
 
 class Paper:
@@ -24,8 +24,16 @@ class Paper:
 
     def paper(self):
         """Base object for paper medium"""
-        return Paper.paper
+        return self.paper
 
     def text(self):
         """Text is created by a pencil writing on paper"""
-        return Paper.text
+        return self.text
+
+    def filename(self):
+        """Papers are kept as named files"""
+        filename = self.filename
+
+    def filepath(self):
+        """files are kepts in named locations known as a file_path"""
+        filepath = self.filepath
