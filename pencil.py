@@ -9,5 +9,13 @@ Test Framework: pytest
 def pencil():
     return pencil
 
-def paper():
-    return paper
+
+# Paper is the surface the pencil creates text on
+
+class Paper:
+ 
+    def paper(self):
+        return Paper.paper
+
+    def text(self):
+        return Paper.text
