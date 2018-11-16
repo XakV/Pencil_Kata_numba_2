@@ -9,12 +9,12 @@ Kata Specification:
 from pencil import Pencil
 from pencil import Paper
 
-# Tests for Pencil Specs
 def test_pencil():
+    """Testing instance of pencil class and pencil's ability to write"""
     assert Pencil.pencil
     assert Pencil.writes
 
-# Tests for Paper Specs
 def test_paper():
+    """Testing instance of paper class and presence of text on paper"""
     assert Paper.paper
     assert Paper.text
