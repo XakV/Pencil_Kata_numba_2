@@ -18,10 +18,7 @@ def test_paper_should_reflect_that_text_is_written_and_recorded():
     assert paper.show_written_text(existing_text_on_paper) == existing_text_on_paper
 
 def test_text_written_by_pencil_should_always_be_appended_to_existing_text_on_paper():
-    existing_text_on_paper = "Counting flowers on the wall, "
-    print(existing_text_on_paper)
-    print(type(existing_text_on_paper))
-    new_text_added = "That don't bother me at all."
-    print(new_text_added)
-    print(type(new_text_added))
+    existing_text_on_paper = "She sells sea shells"
+    new_text_added = " down by the sea shore."
+    assert paper.show_written_text(existing_text_on_paper) + pencil.write_text_with_pencil(new_text_added) == "She sells sea shells down by the sea shore."
     assert paper.show_written_text(existing_text_on_paper) + pencil.write_text_with_pencil(new_text_added) == paper.view_new_text(existing_text_on_paper, new_text_added)
