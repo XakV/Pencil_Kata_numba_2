@@ -6,7 +6,11 @@ Requirements: https://github.com/PillarTechnology/kata-pencil-durability
 Test Framework: pytest
 '''
 
-def show_written_text():
-    show_written_text = True
-    return show_written_text
+from pencil import *
 
+def show_written_text(existing_text_on_paper):
+    return existing_text_on_paper
+
+def view_new_text(existing_text_on_paper, new_text_added):
+    view_new_text = existing_text_on_paper + new_text_added
+    return view_new_text
