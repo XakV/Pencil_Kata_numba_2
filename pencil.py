@@ -6,3 +6,6 @@ Requirements: https://github.com/PillarTechnology/kata-pencil-durability
 Test Framework: pytest
 '''
 
+def write_text_with_pencil():
+    pencil_can_write_text = True
+    return pencil_can_write_text
