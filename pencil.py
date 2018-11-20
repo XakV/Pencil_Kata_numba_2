@@ -18,7 +18,9 @@ class pencil():
     def pencil_can_write_text(self):
         return pencil.pencil_can_write_text
     
-    def write_text_with_pencil(self, new_text_to_add):
-        pencil.new_text_added = new_text_to_add
-        return pencil.new_text_added
-
+    def write_text_with_pencil(self, new_text_to_add, character_limit=None):
+        if character_limit is not None:
+            self.new_text_added = new_text_to_add[:character_limit]
+        else:
+            self.new_text_added = new_text_to_add
+        return self.new_text_added

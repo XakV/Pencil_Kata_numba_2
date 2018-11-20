@@ -34,3 +34,9 @@ def test_when_a_pencil_is_created_it_has_a_value_for_point_durability():
     new_pencil.new_pencil_point = new_pencil.pencil_point_durability(durability)
     assert new_pencil.pencil_point_durability
 
+def test_a_pencil_can_write_a_limited_number_of_characters_before_it_goes_dull():
+    character_limit = 5
+    _pencil = pencil()
+    text_to_write = "A_String_longer_than_five"
+    pencil_written_characters = _pencil.write_text_with_pencil(text_to_write, character_limit)
+    assert len(pencil_written_characters) <= character_limit
