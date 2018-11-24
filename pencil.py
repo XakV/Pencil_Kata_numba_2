@@ -17,10 +17,12 @@ class pencil():
 
     def pencil_can_write_text(self):
         return pencil.pencil_can_write_text
-    
-    def write_text_with_pencil(self, new_text_to_add, character_limit=None):
-        if character_limit is not None:
-            self.new_text_added = new_text_to_add[:character_limit]
+
+    def write_text_with_pencil(self, new_text_to_add, character_limit=None, pencil_is_dull=False):
+        if character_limit is not None and len(new_text_to_add) >= character_limit:
+            space_substitution_string = " " * (len(new_text_to_add) - character_limit)
+            pencil_is_dull = True
+            self.new_text_added = new_text_to_add[:character_limit] + space_substitution_string
         else:
             self.new_text_added = new_text_to_add
-        return self.new_text_added
+        return self.new_text_added, pencil_is_dull
