@@ -7,6 +7,7 @@ Kata Specification:
  - When a pencil is created, it can be provided with a value for point durability.
  - The pencil will be able to write only a limited number of characters before it goes dull
  - After the pencil goes dull, every character the pencil is told to write will appear as a space
+ - Writing newlines and spaces should not degrade the pencil point
 '''
 
 
@@ -50,3 +51,15 @@ def test_a_pencil_writes_spaces_if_it_goes_dull():
         assert pencil_written_characters == text_to_write[:character_limit] + (" " * (len(text_to_write) - character_limit))
     else:
         assert len(pencil_written_characters) <= character_limit
+
+def test_writing_spaces_and_newlines_should_not_degrade_the_pencil_point():
+    test_pencil = pencil.create_new_pencil("test_pencil", 10)
+    test_spaces = "       " #7 consecutive spaces
+    test_newline = "\n"
+    written_space_result, test_pencil = write_text_with_pencil(test_pencil, test_spaces)
+    assert test_pencil['durability'] == 10
+    written_newline_result, test_pencil = write_text_with_pencil(test_pencil, test_newline)
+    assert test_pencil['durability'] == 10
+
+
+
