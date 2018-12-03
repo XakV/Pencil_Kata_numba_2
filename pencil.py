@@ -6,6 +6,7 @@ Requirements: https://github.com/PillarTechnology/kata-pencil-durability
 Test Framework: pytest
 '''
 
+
 class pencil():
 
     def __init__(self):
@@ -15,23 +16,26 @@ class pencil():
         new_pencil = {'pencil_id': pencil_id, 'durability': durability}
         return new_pencil
 
-def count_spaces_in_text(new_text_to_add):
-    space_count = 0
-    for character in list(new_text_to_add):
-        if character.isspace():
-            space_count += 1
-    return space_count
 
-def write_text_with_pencil(pencil, new_text_to_add):
+def write_text_with_pencil(paper='', new_text_to_add='', pencil=None):
+    if pencil is None:
+        pencil = create_new_pencil()
     current_pencil = pencil
-    character_limit = current_pencil['durability']
-    space_count = count_spaces_in_text(new_text_to_add)
-    visible_character_count = len(new_text_to_add) - space_count
-    if character_limit is not None and visible_character_count >= character_limit:
-        space_substitution_string = " " * (len(new_text_to_add) - visible_character_count)
-        current_pencil['durability'] = 0
-        new_text_added = new_text_to_add[:character_limit] + space_substitution_string
-    else:
-        new_text_added = new_text_to_add
-        current_pencil['durability'] = character_limit - len(new_text_to_add) + space_count
-    return new_text_added, current_pencil
+    print(current_pencil['durability'], type(current_pencil['durability']))
+    p_durability = current_pencil['durability']
+    text_as_written = ''
+    for character in new_text_to_add:
+        if p_durability > 0:
+            if character.ascii_uppercase():
+                p_durability -= 2
+            elif character.ascii_printable() == True and character.ascii_whitespace != True:
+                p_durability -= 1
+            elif character.ascii_whitespace():
+                continue
+            text_as_written.append(character)
+        elif p_durability == 0:
+            text_as_written.append(' ')
+        else:
+            print('Unexpected pencil durability')
+    current_pencil['durability'] = p_durability
+    return text_as_written, current_pencil

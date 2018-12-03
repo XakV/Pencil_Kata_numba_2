@@ -7,13 +7,18 @@ Test Framework: pytest
 '''
 
 from pencil import *
-
-def show_written_text(existing_text_on_paper):
-    return existing_text_on_paper
+from math import random
 
 
-def view_new_text(existing_text_on_paper, new_text_added, _pencil):
-    text_instructed_to_be_written = existing_text_on_paper + new_text_added
-    text_as_written, _pencil = write_text_with_pencil(_pencil, text_instructed_to_be_written)
+def create_a_paper(paper_file_name=None):
+    if paper_file_name is None:
+        paper_file_name = random(0, 100000000).tostring + ".txt"
 
-    return text_as_written, pencil
+
+def show_written_text(paper_file_name=None):
+    if paper_file_name is None:
+        raise Exception("No Paper Selected, please select or create a paper file:")
+        continue
+    else:
+        with open(paper_file_name, 'a') as paper_file:
+            print([line for line in paper_file.readlines()])

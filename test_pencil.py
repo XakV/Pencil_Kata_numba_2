@@ -65,4 +65,13 @@ def test_writing_spaces_and_newlines_should_not_degrade_the_pencil_point():
 def test_writing_lowercase_letters_degrades_pencil_point_by_one():
     lower_test_pencil = pencil.create_new_pencil("lower_test_pencil", 4)
     lowercase_test_string = "text"
+    expected_string_returned = lowercase_test_string
     pencil_written_characters, test_pencil = write_text_with_pencil(lower_test_pencil, lowercase_test_string)
+    assert expected_string_returned == lowercase_test_string
+
+def test_writing_uppercase_letters_degrades_pencil_point_by_two():
+    upper_test_pencil = pencil.create_new_pencil("upper_test_pencil", 4)
+    uppercase_test_string = "Text"
+    expected_string_returned = "Tex"
+    pencil_written_characters, test_pencil = write_text_with_pencil(upper_test_pencil, uppercase_test_string)
+    assert expected_string_returned == pencil_written_characters
