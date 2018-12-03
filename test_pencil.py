@@ -62,4 +62,7 @@ def test_writing_spaces_and_newlines_should_not_degrade_the_pencil_point():
     assert test_pencil['durability'] == 10
 
 
-
+def test_writing_lowercase_letters_degrades_pencil_point_by_one():
+    lower_test_pencil = pencil.create_new_pencil("lower_test_pencil", 4)
+    lowercase_test_string = "text"
+    pencil_written_characters, test_pencil = write_text_with_pencil(lower_test_pencil, lowercase_test_string)
