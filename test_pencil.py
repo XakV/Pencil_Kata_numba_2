@@ -18,23 +18,30 @@ import paper
 
 def test_a_writer_can_use_a_pencil_to_write_text_on_a_sheet_of_paper():
     _pencil = pencil.create_new_pencil('_pencil', 100)
-    assert _pencil['durability'] > 0
+    assert _pencil['durability']
 
 
 def test_paper_should_reflect_that_text_is_written_and_recorded():
-    existing_text_on_paper = "Counting flowers on the wall, "
     test_pencil = pencil.create_new_pencil('test_pencil', 100)
-    pencil_written_text, test_pencil = write_text_with_pencil(test_pencil, existing_text_on_paper)
-    assert paper.show_written_text(existing_text_on_paper) == pencil_written_text
+    test_text = "Show me written text"
+    test_paper = create_a_paper("test_paper_shows_text.txt")
+    paper_with_text = paper.record_text_on_paper(test_paper, test_pencil, test_text)
+    _, test_paper_result = paper.show_written_text(test_paper, "test_output")
+    assert test_paper_result == test_text
 
 
 def test_text_written_by_pencil_should_always_be_appended_to_existing_text_on_paper():
     existing_text_on_paper = "She sells sea shells"
     new_text_added = " down by the sea shore."
+    paper_file = "test_appending_text.txt"
+    compare_file = "compare_resultof_append_test.txt"
     _pencil = pencil.create_new_pencil('_pencil', 100)
-    pencil_written_text, _pencil = write_text_with_pencil(_pencil, new_text_added)
-    new_paper_view, _pencil = paper.view_new_text(existing_text_on_paper, new_text_added, _pencil)
-    assert paper.show_written_text(existing_text_on_paper) + pencil_written_text == new_paper_view
+    original_paper = paper.record_text_on_paper(paper_file, existing_text_on_paper)
+    next_paper = paper.record_text_on_paper(original_paper, new_text_added)
+    compare_paper = paper.create_a_paper(compare_file)
+    text_to_compare = existing_text_on_paper + new_text_added
+    written_compare_paper = paper.record_text_on_paper(compare_paper, text_to_compare)
+    assert written_compare_paper == next_paper
 
 
 def test_when_a_pencil_is_created_it_has_a_value_for_point_durability():

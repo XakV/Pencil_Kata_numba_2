@@ -17,11 +17,14 @@ class pencil():
         return new_pencil
 
 
-def write_text_with_pencil(paper='', new_text_to_add='', pencil=None):
+def write_text_with_pencil(paper_file=None, new_text_to_add=None, pencil=None):
     if pencil is None:
         pencil = create_new_pencil()
     current_pencil = pencil
-    print(current_pencil['durability'], type(current_pencil['durability']))
+    if new_text_to_add is None:
+        new_text_to_add = ''
+    if paper_file is None:
+        raise Execption("Paper is needed to begin writing")
     p_durability = current_pencil['durability']
     text_as_written = ''
     for character in new_text_to_add:
