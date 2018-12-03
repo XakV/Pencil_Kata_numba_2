@@ -48,7 +48,7 @@ def test_a_pencil_writes_spaces_if_it_goes_dull():
     text_to_write = "A_String_longer_than_five"
     pencil_written_characters, _pencil = write_text_with_pencil(_pencil, text_to_write)
     if _pencil['durability'] == 0:
-        assert pencil_written_characters == text_to_write[:character_limit] + (" " * (len(text_to_write) - character_limit))
+        assert pencil_written_characters + (" " * (len(text_to_write) - character_limit)) == text_to_write[:character_limit] + (" " * (len(text_to_write) - character_limit))
     else:
         assert len(pencil_written_characters) <= character_limit
 
