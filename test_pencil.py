@@ -71,3 +71,29 @@ def test_writing_uppercase_letters_degrades_pencil_point_by_two():
     upper_test_pencil, parsed_upper_text = upper_test_pencil.parse_text_written(uppercase_test_string)
     assert expected_string_returned == parsed_upper_text
     assert upper_test_pencil.point_durability == 0
+
+def test_sharpening_a_pencil_restores_its_initial_point_durability():
+    pass
+
+def test_sharpening_a_pencil_shortens_its_length_by_one():
+    pass
+
+def test_a_pencil_of_zero_length_can_not_be_sharpened():
+    pass
+
+def test_an_eraser_will_remove_the_last_instance_of_the_text_its_directed_to_erase():
+    pass
+
+def test_when_a_pencil_is_created_it_can_be_given_a_value_for_eraser_durability():
+    pass
+
+def test_erasing_any_non_space_character_degrades_the_eraser_durability_by_one():
+    pass
+
+def test_an_eraser_with_a_durability_of_zero_can_not_erase():
+    pass
+
+def test_edit_ability():
+    pass
+
+#TODO: write all of the editing tests
