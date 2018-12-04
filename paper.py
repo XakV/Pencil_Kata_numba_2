@@ -6,9 +6,6 @@ Requirements: https://github.com/PillarTechnology/kata-pencil-durability
 Test Framework: pytest
 '''
 
-from pencil import *
-from random import randint
-
 def show_written_text(paper_file_name):
     if paper_file_name is None:
         raise Exception("No Paper Selected, please select or create a paper file:")

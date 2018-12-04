@@ -5,71 +5,35 @@ Started: 16 Nov 2018
 Requirements: https://github.com/PillarTechnology/kata-pencil-durability
 Test Framework: pytest
 '''
-import paper
+class Pencil():
 
-def create_new_pencil(pencil_id="default", durability=0):
-        new_pencil = {'pencil_id': pencil_id, 'durability': durability}
-        return new_pencil
-#TODO refactor pencil degrade
-def degrade_pencil_point(pencil_id="default", text_to_write=''):
-    current_pencil = pencil_id
-    p_durability = current_pencil['durability']
-    text_as_written = ''
-    for character in text_to_write:
-        if p_durability >= 2:
-            if character.isspace() == True or character.isprintable() != True:
-                p_durability += 0
-                text_as_written = text_as_written + character
-                print(text_as_written)
-            elif character.isupper() == True:
-                p_durability -= 2
-                text_as_written = text_as_written + character
-                print(text_as_written)
-            elif character.islower() == True:
-                p_durability -= 1
-                text_as_written = text_as_written + character
-                print(text_as_written)
-            elif character.isprintable() == True:
-                p_durability -= 1
-                text_as_written = text_as_written + character
-                print(text_as_written)
-            else:
-                raise Exception("Unknown character parsed")
-        elif p_durability == 1:
-            if character.isupper() == True:
-                p_durability = 0
-                text_as_written = text_as_written + ' '
-                print(text_as_written)
-            elif character.islower() == True or character.isprintable() == True:
-                p_durability -= 1
-                text_as_written = text_as_written + character
-                print(text_as_written)
-            elif character.isspace() == True or character.isprintable() != True:
-                p_durability += 0
-                text_as_written = text_as_written + character
-                print(text_as_written)
-            else:
-                raise Exception("Unknown character parsed")
-        elif p_durability == 0:
-            if character.isprintable() == True:
-                text_as_written = text_as_written + ' '
-            else:
-                text_as_written = text_as_written + character
-                print(text_as_written)
-        else:
-            raise Exception('Unexpected pencil durability')
-    current_pencil['durability'] = p_durability
-    print(text_as_written)
-    return current_pencil, text_as_written
+    upper_case_wear = 2
+    lower_case_wear = 1
+    other_printable_wear = 1
+    space_or_non_printing_wear = 0
 
-def write_text_with_pencil(paper_file=None, new_text_to_add=None, pencil=None):
-    if pencil is None:
-        raise Exception("Pencil is needed for writing")
-    if new_text_to_add is None:
-        new_text_to_add = ''
-    if paper_file is None:
-        raise Exception("Paper is needed to begin writing")
-    current_pencil = pencil
-    used_pencil, text_as_written = degrade_pencil_point(current_pencil, new_text_to_add)
-    paper.record_text_on_paper(paper_file, text_as_written)
-    return used_pencil
+    def __init__(self,pencil_id="default",point_durability=0):
+        self.point_durability = point_durability
+        self.pencil_id = pencil_id
+
+    def parse_text_written(self,written_characters):
+        parsed_characters = ''
+        for character in written_characters:
+            if character.isupper():
+                self.point_durability -= self.upper_case_wear
+            elif character.islower():
+                self.point_durability -= self.lower_case_wear
+            elif character.isspace() or not character.isprintable():
+                self.point_durability -= self.space_or_non_printing_wear
+            elif character.isprintable() and not character.isspace():
+                self.point_durability -= self.other_printable_wear
+            else:
+                raise Exception("Unexpected Character found")
+                break
+            if self.point_durability >= 0:
+                parsed_characters = parsed_characters + character
+            elif self.point_durability < 0:
+                parsed_characters = parsed_characters + ' '
+        if self.point_durability < 0:
+            self.point_durability = 0
+        return self, parsed_characters
