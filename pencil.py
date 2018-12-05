@@ -17,6 +17,12 @@ class Pencil():
         self.pencil_id = pencil_id
         self.starting_durability = point_durability
         self.length = length
+        if self.length > 0:
+            self.too_small_to_sharpen = False
+        elif self.length == 0:
+            self.too_small_to_sharpen = True
+        else:
+            raise Exception("A pencil can not have a length < 0")
 
     def parse_text_written(self,written_characters):
         parsed_characters = ''
@@ -41,6 +47,11 @@ class Pencil():
         return self, parsed_characters
 
     def sharpen(self):
-        self.point_durability = self.starting_durability
-        self.length = self.length - 1
+        if self.too_small_to_sharpen == False:
+            self.point_durability = self.starting_durability
+            self.length = self.length - 1
+        else:
+            self.length = 0
+            self.too_small_to_sharpen = True
         return self
+

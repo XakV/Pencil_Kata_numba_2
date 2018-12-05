@@ -86,7 +86,10 @@ def test_sharpening_a_pencil_shortens_its_length_by_one():
     assert starting_pencil.length == 9
 
 def test_a_pencil_of_zero_length_can_not_be_sharpened():
-    pass
+    zero_pencil = Pencil("zero_pencil", 5, 0)
+    zero_pencil.sharpen()
+    assert zero_pencil.too_small_to_sharpen == True
+    assert zero_pencil.length == 0
 
 def test_an_eraser_will_remove_the_last_instance_of_the_text_its_directed_to_erase():
     pass
