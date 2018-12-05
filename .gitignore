@@ -4,3 +4,4 @@ __pycache__/**
 .vscode/**
 kata-pencil-durability/**
 .idea/**
+*sh
