@@ -12,10 +12,11 @@ class Pencil():
     other_printable_wear = 1
     space_or_non_printing_wear = 0
 
-    def __init__(self,pencil_id="default",point_durability=0):
+    def __init__(self,pencil_id="default",point_durability=0, length=10):
         self.point_durability = point_durability
         self.pencil_id = pencil_id
         self.starting_durability = point_durability
+        self.length = length
 
     def parse_text_written(self,written_characters):
         parsed_characters = ''
@@ -41,4 +42,5 @@ class Pencil():
 
     def sharpen(self):
         self.point_durability = self.starting_durability
+        self.length = self.length - 1
         return self
