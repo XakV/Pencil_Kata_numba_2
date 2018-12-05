@@ -15,6 +15,7 @@ class Pencil():
     def __init__(self,pencil_id="default",point_durability=0):
         self.point_durability = point_durability
         self.pencil_id = pencil_id
+        self.starting_durability = point_durability
 
     def parse_text_written(self,written_characters):
         parsed_characters = ''
@@ -37,3 +38,7 @@ class Pencil():
         if self.point_durability < 0:
             self.point_durability = 0
         return self, parsed_characters
+
+    def sharpen(self):
+        self.point_durability = self.starting_durability
+        return self

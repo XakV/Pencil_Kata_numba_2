@@ -12,8 +12,9 @@ Kata Specification:
  - Writing a lowercase letter degrades the pencil point by 1
 '''
 
-from pencil import *
 from paper import *
+from pencil import *
+import subprocess
 
 
 def test_when_a_pencil_is_created_it_has_a_value_for_point_durability():
@@ -73,10 +74,16 @@ def test_writing_uppercase_letters_degrades_pencil_point_by_two():
     assert upper_test_pencil.point_durability == 0
 
 def test_sharpening_a_pencil_restores_its_initial_point_durability():
-    pass
+    pencil_gets_dull = Pencil("pencil_gets_dull", 5)
+    dull_pencil_start_point_d = 5
+    pencil_gets_dull, _ = pencil_gets_dull.parse_text_written("dullme")
+    sharpened_pencil = pencil_gets_dull.sharpen()
+    assert sharpened_pencil.point_durability == dull_pencil_start_point_d
 
 def test_sharpening_a_pencil_shortens_its_length_by_one():
-    pass
+    starting_pencil = Pencil("starting_pencil", 5)
+    shorter_pencil = starting_pencil.sharpen()
+    assert shorter_pencil.length == starting_pencil.length - 1
 
 def test_a_pencil_of_zero_length_can_not_be_sharpened():
     pass
