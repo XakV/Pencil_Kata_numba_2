@@ -14,11 +14,12 @@ class Pencil():
     other_printable_wear = 1
     space_or_non_printing_wear = 0
 
-    def __init__(self,pencil_id="default",point_durability=0, length=10):
+    def __init__(self,pencil_id="default",point_durability=0, length=10, eraser_durability=0):
         self.point_durability = point_durability
         self.pencil_id = pencil_id
         self.starting_durability = point_durability
         self.length = length
+        self.eraser_durability = eraser_durability
         if self.length > 0:
             self.too_small_to_sharpen = False
         elif self.length == 0:
