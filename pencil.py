@@ -5,6 +5,8 @@ Started: 16 Nov 2018
 Requirements: https://github.com/PillarTechnology/kata-pencil-durability
 Test Framework: pytest
 '''
+import re
+
 class Pencil():
 
     upper_case_wear = 2
@@ -54,4 +56,29 @@ class Pencil():
             self.length = 0
             self.too_small_to_sharpen = True
         return self
+
+    def erase(self, text, characters_to_remove):
+        for erase_match in re.finditer(characters_to_remove, text):
+            pass    #erase_match gives an re object containing the last match
+        end_of_erase_from = erase_match.span()[0]
+        begin_of_erase_to = erase_match.span()[1]
+        '''
+        I know this needs some explanation and if I am
+        explaining, there is a better way.
+        ----------------------------
+        re.finditer gives me an object
+        of the last match. the object has a tuple of the start and
+        end indices of the match. I am using the values in the tuple
+        to create a string slice below.
+        '''
+        erased_text = text[:end_of_erase_from] + text[begin_of_erase_to:]
+        return self, erased_text
+
+
+
+
+
+
+
+
 

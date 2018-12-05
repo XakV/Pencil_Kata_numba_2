@@ -92,7 +92,12 @@ def test_a_pencil_of_zero_length_can_not_be_sharpened():
     assert zero_pencil.length == 0
 
 def test_an_eraser_will_remove_the_last_instance_of_the_text_its_directed_to_erase():
-    pass
+    text = "erase the last word"
+    character_to_erase = "word"
+    eraser_head_pencil = Pencil("eraser_head_pencil", 100)
+    eraser_head_pencil, parsed_text = eraser_head_pencil.parse_text_written(text)
+    eraser_head_pencil, erased_text = eraser_head_pencil.erase(parsed_text, "word")
+    assert erased_text == "erase the last "
 
 def test_when_a_pencil_is_created_it_can_be_given_a_value_for_eraser_durability():
     pass
