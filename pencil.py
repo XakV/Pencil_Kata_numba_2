@@ -63,9 +63,8 @@ class Pencil():
         for erased_chars in characters_to_remove.split():
             if len(erased_chars) > self.eraser_durability:
                 erased_chars = erased_chars[:self.eraser_durability]
-                self.eraser_durability = 0
                 erasing_list.append(erased_chars)
-                continue
+                self.eraser_durability = self.eraser_durability - len(erased_chars)
             else:
                 self.eraser_durability = self.eraser_durability - len(erased_chars)
                 erasing_list.append(erased_chars)
@@ -78,6 +77,11 @@ class Pencil():
         begin_text_erase = erase_match.span()[0]
         end_text_erase = erase_match.span()[1]
         erased_text = text[:begin_text_erase] + text[end_text_erase:]
+        #erased_text = text[begin_text_erase:] + text[:end_text_erase]
+        print(text[begin_text_erase:])
+        print(text[:begin_text_erase])
+        print(text[end_text_erase:])
+        print(text[:end_text_erase])
         '''
         I know this needs some explanation and if I am
         explaining, there is a better way.
