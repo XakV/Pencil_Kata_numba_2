@@ -63,6 +63,10 @@ class Pencil():
             pass    #erase_match gives an re object containing the last match
         end_of_erase_from = erase_match.span()[0]
         begin_of_erase_to = erase_match.span()[1]
+        eraser_degrade_value = 0
+        for erased_chars in characters_to_remove:
+            if erased_chars.isprintable() and not erased_chars.isspace():
+                eraser_degrade_value += 1
         '''
         I know this needs some explanation and if I am
         explaining, there is a better way.
@@ -73,6 +77,7 @@ class Pencil():
         to create a string slice below.
         '''
         erased_text = text[:end_of_erase_from] + text[begin_of_erase_to:]
+        self.eraser_durability = self.eraser_durability - eraser_degrade_value
         return self, erased_text
 
 
