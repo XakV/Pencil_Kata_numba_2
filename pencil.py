@@ -59,14 +59,25 @@ class Pencil():
         return self
 
     def erase(self, text, characters_to_remove):
-        for erase_match in re.finditer(characters_to_remove, text):
+        erasing_list = []
+        for erased_chars in characters_to_remove.split():
+            if len(erased_chars) > self.eraser_durability:
+                erased_chars = erased_chars[:self.eraser_durability]
+                self.eraser_durability = 0
+                erasing_list.append(erased_chars)
+                continue
+            else:
+                self.eraser_durability = self.eraser_durability - len(erased_chars)
+                erasing_list.append(erased_chars)
+        assemble_erase_string = ''
+        for word in erasing_list:
+            assemble_erase_string = assemble_erase_string + word + ' '
+        final_erase_string = assemble_erase_string.rstrip()
+        for erase_match in re.finditer(final_erase_string, text):
             pass    #erase_match gives an re object containing the last match
-        end_of_erase_from = erase_match.span()[0]
-        begin_of_erase_to = erase_match.span()[1]
-        eraser_degrade_value = 0
-        for erased_chars in characters_to_remove:
-            if erased_chars.isprintable() and not erased_chars.isspace():
-                eraser_degrade_value += 1
+        begin_text_erase = erase_match.span()[0]
+        end_text_erase = erase_match.span()[1]
+        erased_text = text[:begin_text_erase] + text[end_text_erase:]
         '''
         I know this needs some explanation and if I am
         explaining, there is a better way.
@@ -76,15 +87,4 @@ class Pencil():
         end indices of the match. I am using the values in the tuple
         to create a string slice below.
         '''
-        erased_text = text[:end_of_erase_from] + text[begin_of_erase_to:]
-        self.eraser_durability = self.eraser_durability - eraser_degrade_value
         return self, erased_text
-
-
-
-
-
-
-
-
-

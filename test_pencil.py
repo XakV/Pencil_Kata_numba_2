@@ -113,9 +113,9 @@ def test_erasing_any_non_space_character_degrades_the_eraser_durability_by_one()
 def test_an_eraser_with_a_durability_of_zero_can_not_erase():
     text = "My bonnie lies over the ocean..."
     erase_text = "bonnie lies over"
-    eraser_degrade_pencil = Pencil("eraser_degrade_pencil", 10, 10, 10)
-    eraser_degrade_result, returned_text = eraser_degrade_pencil.erase(text, erase_text)
-    assert returned_text == "My over the ocean"
+    eraser_degrade_pencil_2 = Pencil("eraser_degrade_pencil_2", 10, 10, 10)
+    eraser_degrade_result_2, returned_text = eraser_degrade_pencil_2.erase(text, erase_text)
+    assert returned_text == "My  over the ocean..."
 
 def test_edit_ability():
     pass
