@@ -115,7 +115,16 @@ def test_an_eraser_with_a_durability_of_zero_can_not_erase():
     eraser_degrade_result_2, returned_text = eraser_degrade_pencil_2.erase(text, erase_text)
     assert returned_text == "My  over the ocean..."
 
-def test_edit_ability():
+def test_edit_write_new_text_over_erased_whitespace():
+    initial_written_text = "Call in the dogs and put out the fire!"
+    erase_word = "dogs"
+    replace_word = "cats"
+    edit_test_pencil = Pencil("edit_test_pencil", 100, 10, 10)
+    edit_test_pencil, first_write = edit_test_pencil.parse_text_written(initial_written_text)
+    edit_test_pencil, erased_text = edit_test_pencil.erase(first_write, erase_word)
+    edit_test_pencil, final_text = edit_test_pencil.edit(erased_text, replace_word, start_text_position)
+    assert final_text == "Call in the cats and put out the fire!"
+
+def test_edit_writing_new_characters_over_existing_replaces_the_existing_text_with_an_at_sign():
     pass
 
-#TODO: write all of the editing tests
