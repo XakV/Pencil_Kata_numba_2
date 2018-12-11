@@ -61,7 +61,7 @@ def test_writing_spaces_and_newlines_should_not_degrade_the_pencil_point():
     test_spaces_newline = "        \n" #7 consecutive spaces and a newline
     create_no_degrade = "no_degrade_text" + str(randint(0, 10000))
     test_no_degrade_pencil, no_degrade_file = test_no_degrade_pencil.write_text(test_spaces_newline, create_no_degrade)
-    assert test_no_degrade_pencil.point_durability == 10
+    assert test_no_degrade_pencil.durability == 10
 
 def test_writing_lowercase_letters_degrades_pencil_point_by_one():
     lower_test_pencil = Pencil("lower_test_pencil", 4)
