@@ -55,7 +55,7 @@ class Eraser(WritingTool):
         WritingTool.__init__(self)
 
 
-    def erase(self, text_doc, string_to_erase, string_to_replace):
+    def erase(self, text_doc, string_to_erase):
 
         parsed_erased_list = []
         with open(text_doc, 'r') as text:
@@ -73,6 +73,15 @@ class Eraser(WritingTool):
         new_doc = existing_text.replace(string_to_erase, parsed_erased_text)
         with open(text_doc, 'w') as text:
             text.write(new_doc)
+        return(self, new_doc)
+
+
+class PencilWithEraser(self, Pencil, Eraser):
+
+    def __init__(self, Pencil, Eraser):
+        super().__init__()
+        self.Pencil = Pencil
+        self.Eraser = Eraser
 
 
 def degrade_writing_tool(durability, character):

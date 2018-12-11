@@ -17,110 +17,130 @@ from pencil import *
 import subprocess
 
 
-def test_when_a_pencil_is_created_it_has_a_value_for_point_durability():
+def test_when_a_writing_tool_is_created_it_has_a_value_for_durability():
     _pencil = Pencil('_pencil', 100)
-    assert _pencil.point_durability == 100
+    assert _pencil.durability == 100
+    _eraser = Eraser('_eraser', 100)
+    assert _eraser.durability == 100
 
 
 def test_paper_should_reflect_that_text_is_written_and_recorded():
     test_pencil = Pencil('test_pencil', 100)
     test_text = "Show me written text"
     test_paper = "test_paper_shows_text.txt"
-    test_pencil, written_text = test_pencil.parse_text_written(test_text)
-    record_text_on_paper(test_paper, written_text)
-    test_paper_result = show_written_text(test_paper)
-    assert test_paper_result == written_text
+    test_pencil, written_text = test_pencil.write_text(test_text, test_paper)
+    with open(test_paper, 'r') as paper_file:
+        test_paper_result = paper_file.read()
+    assert test_paper_result == test_text
 
 def test_text_written_by_pencil_should_always_be_appended_to_existing_text_on_paper():
     existing_text_on_paper = "She sells sea shells"
     new_text_added = " down by the sea shore."
     paper_file = "test_appending_text.txt"
     appending_pencil = Pencil('_pencil', 100)
-    appending_pencil, original_text = appending_pencil.parse_text_written(existing_text_on_paper)
-    record_text_on_paper(paper_file, original_text)
-    appending_pencil, new_text = appending_pencil.parse_text_written(new_text_added)
-    record_text_on_paper(paper_file, new_text)
+    appending_pencil, paper_file = appending_pencil.write_text(existing_text_on_paper, paper_file)
+    appending_pencil, paper_file = appending_pencil.write_text(new_text_added)
     text_to_compare = existing_text_on_paper + new_text_added
-    result_of_write = show_written_text(paper_file)
+    with open(paper_file, 'r') as append_paper:
+        result_of_write = append_paper.read()
     assert text_to_compare == result_of_write
 
 def test_a_pencil_writes_spaces_if_it_goes_dull():
     character_limit = 5
     spaces_pencil = Pencil("spaces_pencil", character_limit)
     text_to_write = "astring"
-    spaces_pencil, dull_pencil_text = spaces_pencil.parse_text_written(text_to_write)
+    spaces_pencil, spaces_file = spaces_pencil.write_text(text_to_write, "/tmp/spaces" + math.randint(0, 10000)) )
     test_with_space_subs = "astri  "
+    with open(spaces_file, 'r') as space_file:
+        dull_pencil_text = space_file.read()
     assert dull_pencil_text == test_with_space_subs
 
 def test_writing_spaces_and_newlines_should_not_degrade_the_pencil_point():
     test_no_degrade_pencil = Pencil("test_no_degrade_pencil", 10)
     test_spaces_newline = "        \n" #7 consecutive spaces and a newline
-    test_no_degrade_pencil, _ = test_no_degrade_pencil.parse_text_written((test_spaces_newline))
+    test_no_degrade_pencil, no_degrade_file = test_no_degrade_pencil.write_text((test_spaces_newline, "/tmp/no_degrade" + math.randint(0, 10000)))
     assert test_no_degrade_pencil.point_durability == 10
 
 def test_writing_lowercase_letters_degrades_pencil_point_by_one():
     lower_test_pencil = Pencil("lower_test_pencil", 4)
     lowercase_test_string = "text"
-    lower_test_pencil, parsed_lowercase_text = lower_test_pencil.parse_text_written(lowercase_test_string)
-    assert parsed_lowercase_text == lowercase_test_string
+    lower_test_pencil, parsed_lowercase_file = lower_test_pencil.write_text(lowercase_test_string, "/tmp/lower" + math.randint(0, 10000))
     assert lower_test_pencil.point_durability == 0
 
 def test_writing_uppercase_letters_degrades_pencil_point_by_two():
     upper_test_pencil = Pencil("upper_test_pencil", 4)
     uppercase_test_string = "Text"
     expected_string_returned = "Tex "
-    upper_test_pencil, parsed_upper_text = upper_test_pencil.parse_text_written(uppercase_test_string)
-    assert expected_string_returned == parsed_upper_text
+    upper_test_pencil, parsed_upper_file = upper_test_pencil.write_text(uppercase_test_string, "/tmp/fixme")
+    with open(parsed_upper_file, 'a') as parsed_upper:
+        parsed_upper_return = parsed_upper.read()
     assert upper_test_pencil.point_durability == 0
+    assert parsed_upper_return == expected_string_returned
 
 def test_sharpening_a_pencil_restores_its_initial_point_durability():
     pencil_gets_dull = Pencil("pencil_gets_dull", 5)
-    dull_pencil_start_point_d = 5
-    pencil_gets_dull, _ = pencil_gets_dull.parse_text_written("dullme")
-    sharpened_pencil = pencil_gets_dull.sharpen
-    assert sharpened_pencil.point_durability == dull_pencil_start_point_d
+    pencil_gets_dull.durability = 0
+    sharpened_pencil = pencil_gets_dull.sharpen()
+    assert sharpened_pencil.point_durability == 5
 
 def test_sharpening_a_pencil_shortens_its_length_by_one():
     starting_pencil = Pencil("starting_pencil", 5, 10)
-    starting_pencil.sharpen
+    starting_pencil.sharpen()
     assert starting_pencil.length == 9
 
 def test_a_pencil_of_zero_length_can_not_be_sharpened():
     zero_pencil = Pencil("zero_pencil", 5, 0)
-    zero_pencil.sharpen
-    assert zero_pencil.too_small_to_sharpen == True
+    zero_pencil.durability = 0
+    zero_pencil.sharpen()
+    assert zero_pencil.durability == 0
     assert zero_pencil.length == 0
 
 def test_an_eraser_will_remove_the_last_instance_of_the_text_its_directed_to_erase():
     text = "erase the last word"
-    eraser_head_pencil = Pencil("eraser_head_pencil", 100, 100, 100)
-    eraser_head_pencil, erased_text = eraser_head_pencil.erase(text, "word")
-    assert erased_text == "erase the last "
+    _ = Pencil("default", 30)
+    test_erase_file = "/tmp/eraseme"
+    eraser_test = Eraser("eraser_test", 100)
+    _, test_erase_file = _.write_text(text, test_erase_file)
+    eraser_test, test_erase_file = eraser_test.erase(test_erase_file, "word")
+    with open(test_erase_file, 'r') as erase_file:
+        returned_text = erase_file.read()
+    assert returned_text == "erase the last "
+
+#Need to update class to be able to add an eraser to a pencil - perhaps an EditTool class?
 
 def test_when_a_pencil_is_created_it_can_be_given_a_value_for_eraser_durability():
-    pencil_with_eraser_durability = Pencil("eraser_test", 10, 10, 10)
-    assert pencil_with_eraser_durability.eraser_durability == 10
+    pencil_with_eraser = PencilWithEraser.Pencil("pencil_with_eraser", 10, 10)
+    pencil_with_eraser = PencilWithEraser.Eraser("eraser_on_pencil", 10)
+    assert pencil_with_eraser.eraser_on_pencil.durability == 10
 
+
+#TODO fix all this jazz
 def test_erasing_any_non_space_character_degrades_the_eraser_durability_by_one():
     text = "My bonnie lies over the ocean..."
+    _pencil = Pencil("_pencil", 100, 100)
+    erased_doc = "/tmp/erased_doc"
+    _pencil, erased_doc = _pencil.write_text(text, erased_doc)
     erase_text = "bonnie"
-    eraser_degrade_pencil = Pencil("eraser_degrade_pencil", 10, 10, 10)
-    eraser_degrade_result, returned_text = eraser_degrade_pencil.erase(text, erase_text)
-    assert eraser_degrade_pencil.eraser_durability == 4
+    degraded_eraser = Eraser("degraded_eraser", 100)
+    degraded_eraser, returned_doc = degraded_eraser.erase(erased_doc, erase_text)
+    assert degraded_eraser.durability == 96
 
 def test_an_eraser_with_a_durability_of_zero_can_not_erase():
     text = "My bonnie lies over the ocean..."
     erase_text = "bonnie lies over"
-    eraser_degrade_pencil_2 = Pencil("eraser_degrade_pencil_2", 10, 10, 10)
-    eraser_degrade_result_2, returned_text = eraser_degrade_pencil_2.erase(text, erase_text)
-    assert returned_text == "My  over the ocean..."
+    zero_eraser = Eraser("zero_eraser", 0)
+    zero_eraser, zero_erased_file = zero_eraser.erase("/tmp/zero_erased_file", erase_text)
+    with open(zero_erased_file, 'r') as unerased:
+        unerased_text = unerased.read()
+    assert unerased_text == text
 
+#TODO - save these two for tomorrow
 def test_edit_write_new_text_over_erased_whitespace():
     initial_written_text = "Call in the dogs and put out the fire!"
     erase_word = "dogs"
     replace_word = "cats"
     edit_test_pencil = Pencil("edit_test_pencil", 100, 10, 10)
-    edit_test_pencil, first_write = edit_test_pencil.parse_text_written(initial_written_text)
+    edit_test_pencil, first_write = edit_test_pencil.write_text(initial_written_text)
     edit_test_pencil, erased_text = edit_test_pencil.erase(first_write, erase_word)
     edit_test_pencil, final_text = edit_test_pencil.edit(erased_text, replace_word, start_text_position)
     assert final_text == "Call in the cats and put out the fire!"
@@ -130,7 +150,7 @@ def test_edit_writing_new_characters_over_existing_replaces_the_existing_text_wi
     erase_word = "dogs"
     replace_word = "robot vacuum cleaners"
     edit_test_pencil = Pencil("edit_test_pencil", 100, 10, 10)
-    edit_test_pencil, first_write = edit_test_pencil.parse_text_written(initial_written_text)
+    edit_test_pencil, first_write = edit_test_pencil.write_text(initial_written_text)
     edit_test_pencil, erased_text = edit_test_pencil.erase(first_write, erase_word)
     edit_test_pencil, final_text = edit_test_pencil.edit(erased_text, replace_word, start_text_position)
     assert final_text == "Call in the robot@@@c@@@ @@@a@@@@fire!"
