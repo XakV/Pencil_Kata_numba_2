@@ -1,94 +1,90 @@
-'''
-Pencil Kata - Pillar Technology Apprentice Application
-Author: Zach Villers
-Started: 16 Nov 2018
-Requirements: https://github.com/PillarTechnology/kata-pencil-durability
-Test Framework: pytest
-'''
-import re
+class WritingTool:
 
-class Pencil():
+    self.lower_case_character_wear = 1
+    self.upper_case_character_wear = 1
+    self.other_printable_char_wear = 1
 
-    upper_case_wear = 2
-    lower_case_wear = 1
-    other_printable_wear = 1
-    space_or_non_printing_wear = 0
+    def __init__(self, tool_id, durability=None):
 
-    def __init__(self,pencil_id="default",point_durability=0, length=10, eraser_durability=0):
-        self.point_durability = point_durability
-        self.pencil_id = pencil_id
-        self.starting_durability = point_durability
+        self.tool_id = tool_id
+        self.durability = durability
+
+
+
+class Pencil(WritingTool):
+
+    upper_case_character_wear = WritingTool.wear_factor * 2
+
+    def __init__(self, length=None):
+        WritingTool.__init__(self)
         self.length = length
-        self.eraser_durability = eraser_durability
-        if self.length > 0:
-            self.too_small_to_sharpen = False
-        elif self.length == 0:
-            self.too_small_to_sharpen = True
-        else:
-            raise Exception("A pencil can not have a length < 0")
+        self.starting_point_durability = WritingTool.durability
 
-    def parse_text_written(self,written_characters):
-        parsed_characters = ''
-        for character in written_characters:
-            if character.isupper():
-                self.point_durability -= self.upper_case_wear
-            elif character.islower():
-                self.point_durability -= self.lower_case_wear
-            elif character.isspace() or not character.isprintable():
-                self.point_durability -= self.space_or_non_printing_wear
-            elif character.isprintable() and not character.isspace():
-                self.point_durability -= self.other_printable_wear
+    def write_text(self, text_to_write, paper_file):
+        text_list = list(text_to_write)
+        parsed_text_list = []
+        for character in text_list:
+            self.durability = degrade_writing_tool(self.durability, character)
+            if self.durability < 0:
+                character = ' '
+                self.durability = 0
             else:
-                raise Exception("Unexpected Character found")
-                break
-            if self.point_durability >= 0:
-                parsed_characters = parsed_characters + character
-            elif self.point_durability < 0:
-                parsed_characters = parsed_characters + ' '
-        if self.point_durability < 0:
-            self.point_durability = 0
-        return self, parsed_characters
+                character = character
+            parsed_text_list.append(character)
+        parsed_text = ''.join(parsed_erased_list)
+        with open(paper_file, 'a') as target_file:
+            target_file.write(parsed_text)
+        return self, paper_file
 
     def sharpen(self):
-        if self.too_small_to_sharpen == False:
-            self.point_durability = self.starting_durability
-            self.length = self.length - 1
+        if self.length <= 0:
+            print("Can't sharpen this pencil. It is too short.")
         else:
-            self.length = 0
-            self.too_small_to_sharpen = True
+            self.length -= 1
+            self.durability = self.starting_point_durability
+            print("Pencil sharpened. New durability is {}".format(self.durability))
+            print("Resulting pencil length is now {}".format(self.length))
         return self
 
-    def erase(self, text, characters_to_remove):
-        erasing_list = []
-        for erased_chars in characters_to_remove.split():
-            if len(erased_chars) > self.eraser_durability:
-                erased_chars = erased_chars[:self.eraser_durability]
-                erasing_list.append(erased_chars)
-                self.eraser_durability = self.eraser_durability - len(erased_chars)
+
+
+class Eraser(WritingTool):
+
+
+    def __init__(self):
+        WritingTool.__init__(self)
+
+
+    def erase(self, text_doc, string_to_erase, string_to_replace):
+
+        parsed_erased_list = []
+        with open(text_doc, 'r') as text:
+            existing_text = text.read()
+        erase_list = list(string_to_erase)
+        for character in erase_list:
+            self.durability = degrade_writing_tool(self.durability, character)
+            if self.durability < 0:
+                character = character
+                self.durability = 0
             else:
-                self.eraser_durability = self.eraser_durability - len(erased_chars)
-                erasing_list.append(erased_chars)
-        assemble_erase_string = ''
-        for word in erasing_list:
-            assemble_erase_string = assemble_erase_string + word + ' '
-        final_erase_string = assemble_erase_string.rstrip()
-        for erase_match in re.finditer(final_erase_string, text):
-            pass    #erase_match gives an re object containing the last match
-        begin_text_erase = erase_match.span()[0]
-        end_text_erase = erase_match.span()[1]
-        erased_text = text[:begin_text_erase] + text[end_text_erase:]
-        #erased_text = text[begin_text_erase:] + text[:end_text_erase]
-        print(text[begin_text_erase:])
-        print(text[:begin_text_erase])
-        print(text[end_text_erase:])
-        print(text[:end_text_erase])
-        '''
-        I know this needs some explanation and if I am
-        explaining, there is a better way.
-        ----------------------------
-        re.finditer gives me an object
-        of the last match. the object has a tuple of the start and
-        end indices of the match. I am using the values in the tuple
-        to create a string slice below.
-        '''
-        return self, erased_text
+                character = ' '
+            parsed_erased_list.append(character)
+        parsed_erased_text = ''.join(parsed_erased_list)
+        new_doc = existing_text.replace(string_to_erase, parsed_erased_text)
+        with open(text_doc, 'w') as text:
+            text.write(new_doc)
+
+
+def degrade_writing_tool(durability, character):
+
+    if character.isupper():
+        tool.durability -= tool.upper_case_character_wear
+    elif character.islower():
+        tool.durability -= tool.lower_case_character_wear
+    elif character.isprintable() and not character.isspace():
+        tool.durability -= tool.other_printed_char_wear
+    elif character.isspace():
+        tool.durability -= 0
+    else:
+        raise Exception("Unexpected Character Found")
+    return durability

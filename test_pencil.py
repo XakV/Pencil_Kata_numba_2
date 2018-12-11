@@ -77,17 +77,17 @@ def test_sharpening_a_pencil_restores_its_initial_point_durability():
     pencil_gets_dull = Pencil("pencil_gets_dull", 5)
     dull_pencil_start_point_d = 5
     pencil_gets_dull, _ = pencil_gets_dull.parse_text_written("dullme")
-    sharpened_pencil = pencil_gets_dull.sharpen()
+    sharpened_pencil = pencil_gets_dull.sharpen
     assert sharpened_pencil.point_durability == dull_pencil_start_point_d
 
 def test_sharpening_a_pencil_shortens_its_length_by_one():
     starting_pencil = Pencil("starting_pencil", 5, 10)
-    starting_pencil.sharpen()
+    starting_pencil.sharpen
     assert starting_pencil.length == 9
 
 def test_a_pencil_of_zero_length_can_not_be_sharpened():
     zero_pencil = Pencil("zero_pencil", 5, 0)
-    zero_pencil.sharpen()
+    zero_pencil.sharpen
     assert zero_pencil.too_small_to_sharpen == True
     assert zero_pencil.length == 0
 
@@ -134,4 +134,3 @@ def test_edit_writing_new_characters_over_existing_replaces_the_existing_text_wi
     edit_test_pencil, erased_text = edit_test_pencil.erase(first_write, erase_word)
     edit_test_pencil, final_text = edit_test_pencil.edit(erased_text, replace_word, start_text_position)
     assert final_text == "Call in the robot@@@c@@@ @@@a@@@@fire!"
-
