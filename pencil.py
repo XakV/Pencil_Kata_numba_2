@@ -26,14 +26,14 @@ class Pencil(WritingTool):
         text_list = list(text_to_write)
         parsed_text_list = []
         for character in text_list:
-            self.durability = degrade_writing_tool(self.durability, character)
+            self = degrade_writing_tool(self, character)
             if self.durability < 0:
                 character = ' '
                 self.durability = 0
             else:
                 character = character
             parsed_text_list.append(character)
-        parsed_text = ''.join(parsed_erased_list)
+        parsed_text = ''.join(parsed_text_list)
         with open(paper_file, 'a') as target_file:
             target_file.write(parsed_text)
         return self, paper_file
@@ -43,7 +43,7 @@ class Pencil(WritingTool):
             print("Can't sharpen this pencil. It is too short.")
         else:
             self.length -= 1
-            self.durability = self.starting_point_durability
+            self.durability = self.starting_durability
             print("Pencil sharpened. New durability is {}".format(self.durability))
             print("Resulting pencil length is now {}".format(self.length))
         return self
@@ -86,16 +86,16 @@ class PencilWithEraser(Pencil, Eraser):
         self.Eraser = Eraser
 
 
-def degrade_writing_tool(durability, character):
+def degrade_writing_tool(writing_tool, character):
 
     if character.isupper():
-        tool.durability -= tool.upper_case_character_wear
+        writing_tool.durability -= writing_tool.upper_case_character_wear
     elif character.islower():
-        tool.durability -= tool.lower_case_character_wear
+        writing_tool.durability -= writing_tool.lower_case_character_wear
     elif character.isprintable() and not character.isspace():
-        tool.durability -= tool.other_printed_char_wear
+        writing_tool.durability -= writing_tool.other_printed_char_wear
     elif character.isspace():
-        tool.durability -= 0
+        writing_tool.durability -= 0
     else:
         raise Exception("Unexpected Character Found")
-    return durability
+    return writing_tool

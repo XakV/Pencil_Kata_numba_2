@@ -27,7 +27,7 @@ def test_when_a_writing_tool_is_created_it_has_a_value_for_durability():
 
 
 def test_paper_should_reflect_that_text_is_written_and_recorded():
-    test_pencil = Pencil(100)
+    test_pencil = Pencil('test_pencil', 100, 100)
     test_text = "Show me written text"
     test_paper = "test_paper_shows_text.txt"
     test_pencil, written_text = test_pencil.write_text(test_text, test_paper)
