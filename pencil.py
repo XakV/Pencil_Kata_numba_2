@@ -1,8 +1,8 @@
 class WritingTool:
 
-    self.lower_case_character_wear = 1
-    self.upper_case_character_wear = 1
-    self.other_printable_char_wear = 1
+    lower_case_character_wear = 1
+    upper_case_character_wear = 1
+    other_printable_char_wear = 1
 
     def __init__(self, tool_id, durability=None):
 
@@ -11,14 +11,16 @@ class WritingTool:
 
 
 
+
 class Pencil(WritingTool):
 
-    upper_case_character_wear = WritingTool.wear_factor * 2
-
-    def __init__(self, length=None):
-        WritingTool.__init__(self)
+    def __init__(self, tool_id, durability=0, length=None):
+        super().__init__(self)
+        self.tool_id = tool_id
+        self.durability = durability
         self.length = length
-        self.starting_point_durability = WritingTool.durability
+        self.upper_case_character_wear = self.upper_case_character_wear * 2
+        self.starting_durability = self.durability
 
     def write_text(self, text_to_write, paper_file):
         text_list = list(text_to_write)
@@ -52,7 +54,7 @@ class Eraser(WritingTool):
 
 
     def __init__(self):
-        WritingTool.__init__(self)
+        super().__init__(self)
 
 
     def erase(self, text_doc, string_to_erase):
@@ -76,7 +78,7 @@ class Eraser(WritingTool):
         return(self, new_doc)
 
 
-class PencilWithEraser(self, Pencil, Eraser):
+class PencilWithEraser(Pencil, Eraser):
 
     def __init__(self, Pencil, Eraser):
         super().__init__()

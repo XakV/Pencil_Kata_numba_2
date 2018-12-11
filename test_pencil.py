@@ -18,14 +18,16 @@ import subprocess
 
 
 def test_when_a_writing_tool_is_created_it_has_a_value_for_durability():
-    _pencil = Pencil('_pencil', 100)
+    _pencil = Pencil('_pencil', 100, 100)
+    _pencil.length = 100
     assert _pencil.durability == 100
-    _eraser = Eraser('_eraser', 100)
+    _eraser = Eraser()
+    _eraser.durability = 100
     assert _eraser.durability == 100
 
 
 def test_paper_should_reflect_that_text_is_written_and_recorded():
-    test_pencil = Pencil('test_pencil', 100)
+    test_pencil = Pencil(100)
     test_text = "Show me written text"
     test_paper = "test_paper_shows_text.txt"
     test_pencil, written_text = test_pencil.write_text(test_text, test_paper)
@@ -49,7 +51,7 @@ def test_a_pencil_writes_spaces_if_it_goes_dull():
     character_limit = 5
     spaces_pencil = Pencil("spaces_pencil", character_limit)
     text_to_write = "astring"
-    spaces_pencil, spaces_file = spaces_pencil.write_text(text_to_write, "/tmp/spaces" + math.randint(0, 10000)) )
+    spaces_pencil, spaces_file = spaces_pencil.write_text(text_to_write, "/tmp/spaces" + math.randint(0, 10000))
     test_with_space_subs = "astri  "
     with open(spaces_file, 'r') as space_file:
         dull_pencil_text = space_file.read()
@@ -84,12 +86,12 @@ def test_sharpening_a_pencil_restores_its_initial_point_durability():
     assert sharpened_pencil.point_durability == 5
 
 def test_sharpening_a_pencil_shortens_its_length_by_one():
-    starting_pencil = Pencil("starting_pencil", 5, 10)
+    starting_pencil = Pencil("starting_pencil", 5)
     starting_pencil.sharpen()
     assert starting_pencil.length == 9
 
 def test_a_pencil_of_zero_length_can_not_be_sharpened():
-    zero_pencil = Pencil("zero_pencil", 5, 0)
+    zero_pencil = Pencil("zero_pencil", 5)
     zero_pencil.durability = 0
     zero_pencil.sharpen()
     assert zero_pencil.durability == 0
@@ -117,7 +119,7 @@ def test_when_a_pencil_is_created_it_can_be_given_a_value_for_eraser_durability(
 #TODO fix all this jazz
 def test_erasing_any_non_space_character_degrades_the_eraser_durability_by_one():
     text = "My bonnie lies over the ocean..."
-    _pencil = Pencil("_pencil", 100, 100)
+    _pencil = Pencil("_pencil", 100)
     erased_doc = "/tmp/erased_doc"
     _pencil, erased_doc = _pencil.write_text(text, erased_doc)
     erase_text = "bonnie"
@@ -139,7 +141,7 @@ def test_edit_write_new_text_over_erased_whitespace():
     initial_written_text = "Call in the dogs and put out the fire!"
     erase_word = "dogs"
     replace_word = "cats"
-    edit_test_pencil = Pencil("edit_test_pencil", 100, 10, 10)
+    edit_test_pencil = Pencil("edit_test_pencil", 100)
     edit_test_pencil, first_write = edit_test_pencil.write_text(initial_written_text)
     edit_test_pencil, erased_text = edit_test_pencil.erase(first_write, erase_word)
     edit_test_pencil, final_text = edit_test_pencil.edit(erased_text, replace_word, start_text_position)
@@ -149,7 +151,7 @@ def test_edit_writing_new_characters_over_existing_replaces_the_existing_text_wi
     initial_written_text = "Call in the dogs and put out the fire!"
     erase_word = "dogs"
     replace_word = "robot vacuum cleaners"
-    edit_test_pencil = Pencil("edit_test_pencil", 100, 10, 10)
+    edit_test_pencil = Pencil("edit_test_pencil", 100)
     edit_test_pencil, first_write = edit_test_pencil.write_text(initial_written_text)
     edit_test_pencil, erased_text = edit_test_pencil.erase(first_write, erase_word)
     edit_test_pencil, final_text = edit_test_pencil.edit(erased_text, replace_word, start_text_position)
