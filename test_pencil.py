@@ -95,6 +95,7 @@ def test_sharpening_a_pencil_shortens_its_length_by_one():
 def test_a_pencil_of_zero_length_can_not_be_sharpened():
     zero_pencil = Pencil("zero_pencil", 5)
     zero_pencil.durability = 0
+    zero_pencil.length = 0
     zero_pencil.sharpen()
     assert zero_pencil.durability == 0
     assert zero_pencil.length == 0
