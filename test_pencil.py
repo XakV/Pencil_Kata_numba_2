@@ -88,7 +88,7 @@ def test_sharpening_a_pencil_restores_its_initial_point_durability():
     assert sharpened_pencil.durability == 5
 
 def test_sharpening_a_pencil_shortens_its_length_by_one():
-    starting_pencil = Pencil("starting_pencil", 5)
+    starting_pencil = Pencil("starting_pencil", 5, 10)
     starting_pencil.sharpen()
     assert starting_pencil.length == 9
 
