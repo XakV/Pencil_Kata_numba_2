@@ -68,7 +68,7 @@ def test_writing_lowercase_letters_degrades_pencil_point_by_one():
     lowercase_test_string = "text"
     lower_file = "/tmp/lower" + str(randint(0, 10000))
     lower_test_pencil, parsed_lowercase_file = lower_test_pencil.write_text(lowercase_test_string, lower_file)
-    assert lower_test_pencil.point_durability == 0
+    assert lower_test_pencil.durability == 0
 
 def test_writing_uppercase_letters_degrades_pencil_point_by_two():
     upper_test_pencil = Pencil("upper_test_pencil", 4)
