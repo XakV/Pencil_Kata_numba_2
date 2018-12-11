@@ -76,9 +76,9 @@ def test_writing_uppercase_letters_degrades_pencil_point_by_two():
     expected_string_returned = "Tex "
     upper_test_file = "/tmp/upper" + str(randint(0, 10000))
     upper_test_pencil, parsed_upper_file = upper_test_pencil.write_text(uppercase_test_string, upper_test_file)
-    with open(parsed_upper_file, 'a') as parsed_upper:
+    with open(parsed_upper_file, 'r') as parsed_upper:
         parsed_upper_return = parsed_upper.read()
-    assert upper_test_pencil.point_durability == 0
+    assert upper_test_pencil.durability == 0
     assert parsed_upper_return == expected_string_returned
 
 def test_sharpening_a_pencil_restores_its_initial_point_durability():
