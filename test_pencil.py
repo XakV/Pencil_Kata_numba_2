@@ -82,10 +82,10 @@ def test_writing_uppercase_letters_degrades_pencil_point_by_two():
     assert parsed_upper_return == expected_string_returned
 
 def test_sharpening_a_pencil_restores_its_initial_point_durability():
-    pencil_gets_dull = Pencil("pencil_gets_dull", 5)
+    pencil_gets_dull = Pencil("pencil_gets_dull", 5, 100)
     pencil_gets_dull.durability = 0
     sharpened_pencil = pencil_gets_dull.sharpen()
-    assert sharpened_pencil.point_durability == 5
+    assert sharpened_pencil.durability == 5
 
 def test_sharpening_a_pencil_shortens_its_length_by_one():
     starting_pencil = Pencil("starting_pencil", 5)
