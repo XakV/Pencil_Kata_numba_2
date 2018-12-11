@@ -41,7 +41,7 @@ def test_text_written_by_pencil_should_always_be_appended_to_existing_text_on_pa
     paper_file = "test_appending_text.txt"
     appending_pencil = Pencil('_pencil', 100)
     appending_pencil, paper_file = appending_pencil.write_text(existing_text_on_paper, paper_file)
-    appending_pencil, paper_file = appending_pencil.write_text(new_text_added)
+    appending_pencil, paper_file = appending_pencil.write_text(new_text_added, paper_file)
     text_to_compare = existing_text_on_paper + new_text_added
     with open(paper_file, 'r') as append_paper:
         result_of_write = append_paper.read()

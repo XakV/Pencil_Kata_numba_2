@@ -93,7 +93,7 @@ def degrade_writing_tool(writing_tool, character):
     elif character.islower():
         writing_tool.durability -= writing_tool.lower_case_character_wear
     elif character.isprintable() and not character.isspace():
-        writing_tool.durability -= writing_tool.other_printed_char_wear
+        writing_tool.durability -= writing_tool.other_printable_char_wear
     elif character.isspace():
         writing_tool.durability -= 0
     else:
