@@ -14,8 +14,7 @@ Kata Specification:
 
 from paper import *
 from pencil import *
-import subprocess
-
+from random import randint
 
 def test_when_a_writing_tool_is_created_it_has_a_value_for_durability():
     _pencil = Pencil('_pencil', 100, 100)
@@ -29,7 +28,7 @@ def test_when_a_writing_tool_is_created_it_has_a_value_for_durability():
 def test_paper_should_reflect_that_text_is_written_and_recorded():
     test_pencil = Pencil('test_pencil', 100, 100)
     test_text = "Show me written text"
-    test_paper = "test_paper_shows_text.txt"
+    test_paper = "/tmp/test_paper_shows_text" + str(randint(0, 10000))
     test_pencil, written_text = test_pencil.write_text(test_text, test_paper)
     with open(test_paper, 'r') as paper_file:
         test_paper_result = paper_file.read()
@@ -38,7 +37,7 @@ def test_paper_should_reflect_that_text_is_written_and_recorded():
 def test_text_written_by_pencil_should_always_be_appended_to_existing_text_on_paper():
     existing_text_on_paper = "She sells sea shells"
     new_text_added = " down by the sea shore."
-    paper_file = "test_appending_text.txt"
+    paper_file = "test_appending_text.txt" + str(randint(0, 10000))
     appending_pencil = Pencil('_pencil', 100)
     appending_pencil, paper_file = appending_pencil.write_text(existing_text_on_paper, paper_file)
     appending_pencil, paper_file = appending_pencil.write_text(new_text_added, paper_file)
@@ -51,7 +50,7 @@ def test_a_pencil_writes_spaces_if_it_goes_dull():
     character_limit = 5
     spaces_pencil = Pencil("spaces_pencil", character_limit)
     text_to_write = "astring"
-    spaces_pencil, spaces_file = spaces_pencil.write_text(text_to_write, "/tmp/spaces" + math.randint(0, 10000))
+    spaces_pencil, spaces_file = spaces_pencil.write_text(text_to_write, "/tmp/spaces" + str(randint(0, 10000)))
     test_with_space_subs = "astri  "
     with open(spaces_file, 'r') as space_file:
         dull_pencil_text = space_file.read()
@@ -60,20 +59,23 @@ def test_a_pencil_writes_spaces_if_it_goes_dull():
 def test_writing_spaces_and_newlines_should_not_degrade_the_pencil_point():
     test_no_degrade_pencil = Pencil("test_no_degrade_pencil", 10)
     test_spaces_newline = "        \n" #7 consecutive spaces and a newline
-    test_no_degrade_pencil, no_degrade_file = test_no_degrade_pencil.write_text((test_spaces_newline, "/tmp/no_degrade" + math.randint(0, 10000)))
+    create_no_degrade = "no_degrade_text" + str(randint(0, 10000))
+    test_no_degrade_pencil, no_degrade_file = test_no_degrade_pencil.write_text(test_spaces_newline, create_no_degrade)
     assert test_no_degrade_pencil.point_durability == 10
 
 def test_writing_lowercase_letters_degrades_pencil_point_by_one():
     lower_test_pencil = Pencil("lower_test_pencil", 4)
     lowercase_test_string = "text"
-    lower_test_pencil, parsed_lowercase_file = lower_test_pencil.write_text(lowercase_test_string, "/tmp/lower" + math.randint(0, 10000))
+    lower_file = "/tmp/lower" + str(randint(0, 10000))
+    lower_test_pencil, parsed_lowercase_file = lower_test_pencil.write_text(lowercase_test_string, lower_file)
     assert lower_test_pencil.point_durability == 0
 
 def test_writing_uppercase_letters_degrades_pencil_point_by_two():
     upper_test_pencil = Pencil("upper_test_pencil", 4)
     uppercase_test_string = "Text"
     expected_string_returned = "Tex "
-    upper_test_pencil, parsed_upper_file = upper_test_pencil.write_text(uppercase_test_string, "/tmp/fixme")
+    upper_test_file = "/tmp/upper" + str(randint(0, 10000))
+    upper_test_pencil, parsed_upper_file = upper_test_pencil.write_text(uppercase_test_string, upper_test_file)
     with open(parsed_upper_file, 'a') as parsed_upper:
         parsed_upper_return = parsed_upper.read()
     assert upper_test_pencil.point_durability == 0
@@ -100,7 +102,7 @@ def test_a_pencil_of_zero_length_can_not_be_sharpened():
 def test_an_eraser_will_remove_the_last_instance_of_the_text_its_directed_to_erase():
     text = "erase the last word"
     _ = Pencil("default", 30)
-    test_erase_file = "/tmp/eraseme"
+    test_erase_file = "/tmp/eraseme" + str(randint(0,10000))
     eraser_test = Eraser("eraser_test", 100)
     _, test_erase_file = _.write_text(text, test_erase_file)
     eraser_test, test_erase_file = eraser_test.erase(test_erase_file, "word")
