@@ -53,10 +53,6 @@ class Pencil(WritingTool):
 class Eraser(WritingTool):
 
 
-    def __init__(self):
-        super().__init__(self)
-
-
     def erase(self, text_doc, string_to_erase):
 
         parsed_erased_list = []
@@ -64,7 +60,7 @@ class Eraser(WritingTool):
             existing_text = text.read()
         erase_list = list(string_to_erase)
         for character in erase_list:
-            self.durability = degrade_writing_tool(self.durability, character)
+            self = degrade_writing_tool(self, character)
             if self.durability < 0:
                 character = character
                 self.durability = 0
@@ -72,9 +68,7 @@ class Eraser(WritingTool):
                 character = ' '
             parsed_erased_list.append(character)
         parsed_erased_text = ''.join(parsed_erased_list)
-        new_doc = existing_text.replace(string_to_erase, parsed_erased_text)
-        with open(text_doc, 'w') as text:
-            text.write(new_doc)
+        new_doc = text_doc.replace(string_to_erase, parsed_erased_text)
         return(self, new_doc)
 
 

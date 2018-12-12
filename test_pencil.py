@@ -20,7 +20,7 @@ def test_when_a_writing_tool_is_created_it_has_a_value_for_durability():
     _pencil = Pencil('_pencil', 100, 100)
     _pencil.length = 100
     assert _pencil.durability == 100
-    _eraser = Eraser()
+    _eraser = Eraser('_eraser')
     _eraser.durability = 100
     assert _eraser.durability == 100
 
@@ -37,7 +37,7 @@ def test_paper_should_reflect_that_text_is_written_and_recorded():
 def test_text_written_by_pencil_should_always_be_appended_to_existing_text_on_paper():
     existing_text_on_paper = "She sells sea shells"
     new_text_added = " down by the sea shore."
-    paper_file = "test_appending_text.txt" + str(randint(0, 10000))
+    paper_file = "/tmp/test_appending_text" + str(randint(0, 10000))
     appending_pencil = Pencil('_pencil', 100)
     appending_pencil, paper_file = appending_pencil.write_text(existing_text_on_paper, paper_file)
     appending_pencil, paper_file = appending_pencil.write_text(new_text_added, paper_file)
@@ -59,7 +59,7 @@ def test_a_pencil_writes_spaces_if_it_goes_dull():
 def test_writing_spaces_and_newlines_should_not_degrade_the_pencil_point():
     test_no_degrade_pencil = Pencil("test_no_degrade_pencil", 10)
     test_spaces_newline = "        \n" #7 consecutive spaces and a newline
-    create_no_degrade = "no_degrade_text" + str(randint(0, 10000))
+    create_no_degrade = "/tmp/no_degrade_text" + str(randint(0, 10000))
     test_no_degrade_pencil, no_degrade_file = test_no_degrade_pencil.write_text(test_spaces_newline, create_no_degrade)
     assert test_no_degrade_pencil.durability == 10
 
