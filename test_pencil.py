@@ -122,7 +122,7 @@ def test_when_a_pencil_is_created_it_can_be_given_a_value_for_eraser_durability(
 def test_erasing_any_non_space_character_degrades_the_eraser_durability_by_one():
     text = "My bonnie lies over the ocean..."
     _pencil = Pencil("_pencil", 100)
-    erased_doc = "/tmp/erased_doc"
+    erased_doc = "/tmp/erased_doc" + str(randint(0, 10000))
     _pencil, erased_doc = _pencil.write_text(text, erased_doc)
     erase_text = "bonnie"
     degraded_eraser = Eraser("degraded_eraser", 100)
@@ -141,14 +141,15 @@ def test_an_eraser_with_a_durability_of_zero_can_not_erase():
         unerased_text = unerased.read()
     assert unerased_text == text
 
-#TODO - save these two for tomorrow
+#TODO - implement edit method that tracks location in a file of text
 def test_edit_write_new_text_over_erased_whitespace():
     initial_written_text = "Call in the dogs and put out the fire!"
     erase_word = "dogs"
     replace_word = "cats"
+    edit_test_file = "/tmp/edit_test" + str(randint(0, 10000))
     edit_test_pencil = Pencil("edit_test_pencil", 100)
-    edit_test_pencil, first_write = edit_test_pencil.write_text(initial_written_text)
-    edit_test_pencil, erased_text = edit_test_pencil.erase(first_write, erase_word)
+    edit_test_pencil, first_write_file = edit_test_pencil.write_text(initial_written_text, edit_test_file)
+    edit_test_pencil, erased_text = edit_test_pencil.erase(first_write_file, erase_word)
     edit_test_pencil, final_text = edit_test_pencil.edit(erased_text, replace_word, start_text_position)
     assert final_text == "Call in the cats and put out the fire!"
 
