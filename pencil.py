@@ -68,8 +68,12 @@ class Eraser(WritingTool):
                 character = ' '
             parsed_erased_list.append(character)
         parsed_erased_text = ''.join(parsed_erased_list)
-        new_doc = text_doc.replace(string_to_erase, parsed_erased_text)
-        return(self, new_doc)
+        with open(text_doc, 'r') as tdoc:
+            old_text = tdoc.read()
+        new_text = old_text.replace(string_to_erase, parsed_erased_text)
+        with open(text_doc, 'w') as erased_file:
+            erased_file.write(new_text)
+        return(self, text_doc)
 
 
 class PencilWithEraser(Pencil, Eraser):

@@ -109,7 +109,7 @@ def test_an_eraser_will_remove_the_last_instance_of_the_text_its_directed_to_era
     eraser_test, test_erase_file = eraser_test.erase(test_erase_file, "word")
     with open(test_erase_file, 'r') as erase_file:
         returned_text = erase_file.read()
-    assert returned_text == "erase the last "
+    assert returned_text == "erase the last     "
 
 #Need to update class to be able to add an eraser to a pencil - perhaps an EditTool class?
 
