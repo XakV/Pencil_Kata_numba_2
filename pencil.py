@@ -79,10 +79,11 @@ class Eraser(WritingTool):
 
 class PencilWithEraser(Pencil, Eraser):
 
-    def __init__(self, Pencil, Eraser):
-        super().__init__()
-        self.Pencil = Pencil
-        self.Eraser = Eraser
+    def __init__(self, pencil_name, pencil_durability, pencil_length, eraser_name, eraser_durability):
+        Pencil.__init__(self, tool_id=pencil_name, durability=pencil_durability, length=0)
+        Eraser.__init__(self, tool_id=eraser_name)
+        self.eraser_name = eraser_name
+        self.eraser_durability = eraser_durability
 
 
 def degrade_writing_tool(writing_tool, character):

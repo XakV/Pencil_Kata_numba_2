@@ -114,9 +114,8 @@ def test_an_eraser_will_remove_the_last_instance_of_the_text_its_directed_to_era
 #Need to update class to be able to add an eraser to a pencil - perhaps an EditTool class?
 
 def test_when_a_pencil_is_created_it_can_be_given_a_value_for_eraser_durability():
-    pencil_with_eraser = PencilWithEraser.Pencil("pencil_with_eraser", 10, 10)
-    pencil_with_eraser = PencilWithEraser.Eraser("eraser_on_pencil", 10)
-    assert pencil_with_eraser.eraser_on_pencil.durability == 10
+    pencil_with_eraser = PencilWithEraser("_pencil_with_eraser", 10, 10, "eraser_on_pencil", 10)
+    assert pencil_with_eraser.eraser_durability == 10
 
 
 #TODO fix all this jazz
