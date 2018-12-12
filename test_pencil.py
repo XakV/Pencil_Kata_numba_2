@@ -133,7 +133,7 @@ def test_an_eraser_with_a_durability_of_zero_can_not_erase():
     text = "My bonnie lies over the ocean..."
     erase_text = "bonnie lies over"
     _pencil = Pencil("_pencil", 100, 100)
-    zero_erased_file = "zero_erased_file" + str(randint(0,10000))
+    zero_erased_file = "/tmp/zero_erased_file" + str(randint(0,10000))
     _, file_to_erase = _pencil.write_text(text, zero_erased_file)
     zero_eraser = Eraser("zero_eraser", 0)
     zero_eraser, zero_erased_file = zero_eraser.erase(file_to_erase, erase_text)
@@ -147,9 +147,9 @@ def test_edit_write_new_text_over_erased_whitespace():
     erase_word = "dogs"
     replace_word = "cats"
     edit_test_file = "/tmp/edit_test" + str(randint(0, 10000))
-    edit_test_pencil = Pencil("edit_test_pencil", 100)
-    edit_test_pencil, first_write_file = edit_test_pencil.write_text(initial_written_text, edit_test_file)
-    edit_test_pencil, erased_text = edit_test_pencil.erase(first_write_file, erase_word)
+    edit_test_pencil = PencilWithEraser("edit_test_pencil", 100, 100, "edit_eraser", 100)
+    edit_test_pencil, first_write_file = edit_test_pencil.write_text(edit_test_pencil, initial_written_text,)
+    edit_test_pencil, erased_text = edit_test_pencil.erase("edit_test_pencil", first_write_file, erase_word)
     edit_test_pencil, final_text = edit_test_pencil.edit(erased_text, replace_word, start_text_position)
     assert final_text == "Call in the cats and put out the fire!"
 
@@ -157,8 +157,9 @@ def test_edit_writing_new_characters_over_existing_replaces_the_existing_text_wi
     initial_written_text = "Call in the dogs and put out the fire!"
     erase_word = "dogs"
     replace_word = "robot vacuum cleaners"
+    overwrite_test = "/tmp/overwrite" + randint(0, 10000)
     edit_test_pencil = Pencil("edit_test_pencil", 100)
-    edit_test_pencil, first_write = edit_test_pencil.write_text(initial_written_text)
+    edit_test_pencil, first_write = edit_test_pencil.write_text(initial_written_text, overwrite_test)
     edit_test_pencil, erased_text = edit_test_pencil.erase(first_write, erase_word)
     edit_test_pencil, final_text = edit_test_pencil.edit(erased_text, replace_word, start_text_position)
     assert final_text == "Call in the robot@@@c@@@ @@@a@@@@fire!"

@@ -81,9 +81,24 @@ class PencilWithEraser(Pencil, Eraser):
 
     def __init__(self, pencil_name, pencil_durability, pencil_length, eraser_name, eraser_durability):
         Pencil.__init__(self, tool_id=pencil_name, durability=pencil_durability, length=0)
-        Eraser.__init__(self, tool_id=eraser_name)
-        self.eraser_name = eraser_name
+        Eraser.__init__(self, tool_id=None)
+        self.tool_id = eraser_name
         self.eraser_durability = eraser_durability
+
+    def edit_text(self, doc_to_edit, replacement_text):
+        parsed_text_edit = []
+        with open(doc_to_edit, 'w') as editing_doc:
+            start_of_edit = editing_doc.seek(doct_to_edit.cursor_space)
+            for character in replacement_text:
+                if editing_doc.read().startswith(' '):
+                    with open("/dev/null", 'w') as devnull:
+                        PencilWithEraser.write_text(self, character, devnull)
+                    editing_doc.write(character)
+                else:
+                    with open("/dev/null", 'w') as devnull:
+                        PencilWithEraser.write_text(self, '@', devnull)
+                    editing_doc.write('@')
+        return(self, editing_doc)
 
 
 def degrade_writing_tool(writing_tool, character):
