@@ -128,7 +128,7 @@ def test_erasing_any_non_space_character_degrades_the_eraser_durability_by_one()
     erase_text = "bonnie"
     degraded_eraser = Eraser("degraded_eraser", 100)
     degraded_eraser, returned_doc = degraded_eraser.erase(erased_doc, erase_text)
-    assert degraded_eraser.durability == 96
+    assert degraded_eraser.durability == 94
 
 def test_an_eraser_with_a_durability_of_zero_can_not_erase():
     text = "My bonnie lies over the ocean..."

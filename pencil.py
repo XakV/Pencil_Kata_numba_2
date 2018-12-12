@@ -52,6 +52,7 @@ class Pencil(WritingTool):
 
 class Eraser(WritingTool):
 
+#TODO - this doesnt look for the last instance - it's only part of the solution
 
     def erase(self, text_doc, string_to_erase):
 
