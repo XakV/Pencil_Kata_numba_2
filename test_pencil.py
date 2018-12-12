@@ -132,8 +132,11 @@ def test_erasing_any_non_space_character_degrades_the_eraser_durability_by_one()
 def test_an_eraser_with_a_durability_of_zero_can_not_erase():
     text = "My bonnie lies over the ocean..."
     erase_text = "bonnie lies over"
+    _pencil = Pencil("_pencil", 100, 100)
+    zero_erased_file = "zero_erased_file" + str(randint(0,10000))
+    _, file_to_erase = _pencil.write_text(text, zero_erased_file)
     zero_eraser = Eraser("zero_eraser", 0)
-    zero_eraser, zero_erased_file = zero_eraser.erase("/tmp/zero_erased_file", erase_text)
+    zero_eraser, zero_erased_file = zero_eraser.erase(file_to_erase, erase_text)
     with open(zero_erased_file, 'r') as unerased:
         unerased_text = unerased.read()
     assert unerased_text == text
