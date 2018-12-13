@@ -1,7 +1,4 @@
-import posixpath as posixpath
-from os import *
-import tempfile.TemporaryFile as TempFile
-import paper.Paper as paper
+import paper
 
 
 class WritingTool:
@@ -30,23 +27,17 @@ class WritingTool:
         return self
 
 
-
-
-        
-
-
-
 class Eraser(WritingTool):
 
 
     def __init__(self, eraser_durability):
-        super().__init__(tool_id)
+        super().__init__()
         self.eraser_durability = eraser_durability
 
     def erase(self, string_to_erase):
         erased_string = ''
         for character in string_to_erase:
-            self.eraser_durability = degrade_writing_tool(self, character)
+            self.eraser_durability = self.degrade_writing_tool(character)
             if self.eraser_durability < 0:
                 character = character
                 self.eraser_durability = 0
@@ -70,17 +61,17 @@ class Pencil(WritingTool):
     def write_text(self, text_to_write, paper_file):
         parsed_text = ''
         for character in text_to_write:
-            self = degrade_writing_tool(self, character)
+            self.degrade_writing_tool(character)
             if self.durability < 0:
                 character = ' '
                 self.durability = 0
             else:
                 character = character
-            parsed_text_list.append(character)
+            parsed_text = parsed_text + character
         parsed_text = parsed_text + character
-        written_file = paper.create_or_find_file(paper_file)
+        written_file = paper.Paper.create_or_find_file(paper_file)
         with open(written_file, 'a') as target_file:
-                target_file.write(parsed_text)
+            target_file.write(parsed_text)
         return self, written_file
 
     def sharpen(self):
@@ -101,8 +92,8 @@ class EditorTool:
         self.eraser = Eraser
 
     def edit_existing_file(self, paper_file, entry_point_text, replacement_text):
-        file_to_edit = paper.create_or_find_file(paper_file)
-        editor_entry_point = paper.seek_text(file_to_edit, entry_point_text)
+        file_to_edit = paper.Paper.create_or_find_file(paper_file)
+        editor_entry_point = paper.Paper.seek_text(file_to_edit, entry_point_text)
         with open(file_to_edit.file_name, 'w') as edit_file:
             edit_file.seek(file_to_edit.cursor_position)
             replacement_list = list(replacement_text)
@@ -120,7 +111,7 @@ class EditorTool:
                         raise Exception("End of Line or non-printable character encountered")
                     elif existing_characters_list[character_position].isprintable() and not existing_characters_list[character_position].isspace() == False:
                         self.pencil = self.pencil.degrade_writing_tool(replacement_text[character_position])
-                        if self.pencil.durability >= 0
+                        if self.pencil.durability >= 0:
                             edit_file.write("@")
                         else:
                             print("Pencil Point is dull.")

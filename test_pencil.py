@@ -12,7 +12,7 @@ Kata Specification:
  - Writing a lowercase letter degrades the pencil point by 1
 '''
 
-from paper import *
+import paper
 from pencil import *
 from random import randint
 
