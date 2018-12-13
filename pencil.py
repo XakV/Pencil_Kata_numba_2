@@ -1,3 +1,9 @@
+import posixpath as posixpath
+from os import *
+import tempfile.TemporaryFile as TempFile
+import paper.Paper as paper
+
+
 class WritingTool:
 
     lower_case_character_wear = 1
@@ -10,22 +16,60 @@ class WritingTool:
         self.durability = durability
 
 
+    def degrade_writing_tool(self, character):
+        if character.isupper():
+            self.durability -= self.upper_case_character_wear
+        elif character.islower():
+            self.durability -= self.lower_case_character_wear
+        elif character.isprintable() and not character.isspace():
+            self.durability -= self.other_printable_char_wear
+        elif character.isspace():
+            self.durability -= 0
+        else:
+            raise Exception("Unexpected Character Found")
+        return self
+
+
+
+
+        
+
+
+
+class Eraser(WritingTool):
+
+
+    def __init__(self, eraser_durability):
+        super().__init__(tool_id)
+        self.eraser_durability = eraser_durability
+
+    def erase(self, string_to_erase):
+        erased_string = ''
+        for character in string_to_erase:
+            self.eraser_durability = degrade_writing_tool(self, character)
+            if self.eraser_durability < 0:
+                character = character
+                self.eraser_durability = 0
+            else:
+                character = ' '
+            erased_string += character
+        return(self, erased_string)
+
 
 
 class Pencil(WritingTool):
 
-    def __init__(self, tool_id, durability=0, length=None):
+    def __init__(self, pencil_id, point=0, length=None):
         super().__init__(self)
-        self.tool_id = tool_id
-        self.durability = durability
+        self.tool_id = pencil_id
+        self.durability = point
         self.length = length
         self.upper_case_character_wear = self.upper_case_character_wear * 2
         self.starting_durability = self.durability
 
     def write_text(self, text_to_write, paper_file):
-        text_list = list(text_to_write)
-        parsed_text_list = []
-        for character in text_list:
+        parsed_text = ''
+        for character in text_to_write:
             self = degrade_writing_tool(self, character)
             if self.durability < 0:
                 character = ' '
@@ -33,10 +77,11 @@ class Pencil(WritingTool):
             else:
                 character = character
             parsed_text_list.append(character)
-        parsed_text = ''.join(parsed_text_list)
-        with open(paper_file, 'a') as target_file:
-            target_file.write(parsed_text)
-        return self, paper_file
+        parsed_text = parsed_text + character
+        written_file = paper.create_or_find_file(paper_file)
+        with open(written_file, 'a') as target_file:
+                target_file.write(parsed_text)
+        return self, written_file
 
     def sharpen(self):
         if self.length <= 0:
@@ -49,68 +94,37 @@ class Pencil(WritingTool):
         return self
 
 
+class EditorTool:
 
-class Eraser(WritingTool):
+    def __init__(self):
+        self.pencil = Pencil
+        self.eraser = Eraser
 
-#TODO - this doesnt look for the last instance - it's only part of the solution
+    def edit_existing_file(self, paper_file, entry_point_text, replacement_text):
+        file_to_edit = paper.create_or_find_file(paper_file)
+        editor_entry_point = paper.seek_text(file_to_edit, entry_point_text)
+        with open(file_to_edit.file_name, 'w') as edit_file:
+            edit_file.seek(file_to_edit.cursor_position)
+            replacement_list = list(replacement_text)
+            try:
+                existing_characters_list = list(edit_file.read())
+                for character_position in range(0, len(replacement_list)):
+                    if existing_characters_list[character_position].isspace():
+                        self.pencil = self.pencil.degrade_writing_tool(replacement_text[character_position])
+                        if self.pencil.durability >= 0:
+                            edit_file.write(replacement_character)
+                        else:
+                            edit_file.write(' ')
+                            self.pencil.durability == 0
+                    elif existing_characters_list[character_position].isprintable() == False:
+                        raise Exception("End of Line or non-printable character encountered")
+                    elif existing_characters_list[character_position].isprintable() and not existing_characters_list[character_position].isspace() == False:
+                        self.pencil = self.pencil.degrade_writing_tool(replacement_text[character_position])
+                        if self.pencil.durability >= 0
+                            edit_file.write("@")
+                        else:
+                            print("Pencil Point is dull.")
+            except:
+                print("Unknown error occurred trying to edit file {}".format(paper_file))
+        return self, paper_file
 
-    def erase(self, text_doc, string_to_erase):
-
-        parsed_erased_list = []
-        with open(text_doc, 'r') as text:
-            existing_text = text.read()
-        erase_list = list(string_to_erase)
-        for character in erase_list:
-            self = degrade_writing_tool(self, character)
-            if self.durability < 0:
-                character = character
-                self.durability = 0
-            else:
-                character = ' '
-            parsed_erased_list.append(character)
-        parsed_erased_text = ''.join(parsed_erased_list)
-        with open(text_doc, 'r') as tdoc:
-            old_text = tdoc.read()
-        new_text = old_text.replace(string_to_erase, parsed_erased_text)
-        with open(text_doc, 'w') as erased_file:
-            erased_file.write(new_text)
-        return(self, text_doc)
-
-
-class PencilWithEraser(Pencil, Eraser):
-
-    def __init__(self, pencil_name, pencil_durability, pencil_length, eraser_name, eraser_durability):
-        Pencil.__init__(self, tool_id=pencil_name, durability=pencil_durability, length=0)
-        Eraser.__init__(self, tool_id=None)
-        self.tool_id = eraser_name
-        self.eraser_durability = eraser_durability
-
-    def edit_text(self, doc_to_edit, replacement_text):
-        parsed_text_edit = []
-        with open(doc_to_edit, 'w') as editing_doc:
-            start_of_edit = editing_doc.seek(doct_to_edit.cursor_space)
-            for character in replacement_text:
-                if editing_doc.read().startswith(' '):
-                    with open("/dev/null", 'w') as devnull:
-                        PencilWithEraser.write_text(self, character, devnull)
-                    editing_doc.write(character)
-                else:
-                    with open("/dev/null", 'w') as devnull:
-                        PencilWithEraser.write_text(self, '@', devnull)
-                    editing_doc.write('@')
-        return(self, editing_doc)
-
-
-def degrade_writing_tool(writing_tool, character):
-
-    if character.isupper():
-        writing_tool.durability -= writing_tool.upper_case_character_wear
-    elif character.islower():
-        writing_tool.durability -= writing_tool.lower_case_character_wear
-    elif character.isprintable() and not character.isspace():
-        writing_tool.durability -= writing_tool.other_printable_char_wear
-    elif character.isspace():
-        writing_tool.durability -= 0
-    else:
-        raise Exception("Unexpected Character Found")
-    return writing_tool
