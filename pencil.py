@@ -30,8 +30,8 @@ class WritingTool:
 class Eraser(WritingTool):
 
 
-    def __init__(self, eraser_durability):
-        super().__init__()
+    def __init__(self,tool_id=None, eraser_durability=0):
+        super().__init__(self)
         self.eraser_durability = eraser_durability
 
     def erase(self, string_to_erase):
