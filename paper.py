@@ -14,7 +14,7 @@ def random_file():
    min_characters = 4
    maximum_characters = 20
    allchar = string.ascii_letters + string.digits
-   random_filename = "".join(choice(allchar) for x in range(randint(min_characters, maximum_characters)))
+   random_filename = "/tmp/" + "".join(choice(allchar) for x in range(randint(min_characters, maximum_characters)))
    return random_filename
 
 
