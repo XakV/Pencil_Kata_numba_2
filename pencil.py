@@ -68,7 +68,6 @@ class Pencil(WritingTool):
             else:
                 character = character
             parsed_text = parsed_text + character
-        parsed_text = parsed_text + character
         file_to_write = paper.Paper.create_or_find_file(paper_file)
         written_file = paper.Paper.put_text(file_to_write, parsed_text)
         return self, written_file
