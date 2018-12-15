@@ -21,7 +21,7 @@ def test_when_a_writing_tool_is_created_it_has_a_value_for_durability():
     _pencil.length = 100
     assert _pencil.durability == 100
     _eraser = Eraser("_eraser", 100)
-    assert _eraser.eraser_durability == 100
+    assert _eraser.durability == 100
 
 
 def test_paper_should_reflect_that_text_is_written_and_recorded():
