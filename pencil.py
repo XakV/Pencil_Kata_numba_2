@@ -68,8 +68,8 @@ class Pencil(WritingTool):
             else:
                 character = character
             parsed_text = parsed_text + character
-        file_to_write = paper.Paper.create_or_find_file(paper_file)
-        written_file = paper.Paper.put_text(file_to_write, parsed_text)
+        file_to_write = paper.find_file(paper_file)
+        written_file = paper.put_text(file_to_write, parsed_text)
         return self, written_file
 
     def sharpen(self):
@@ -90,8 +90,8 @@ class EditorTool:
         self.eraser = Eraser
 
     def edit_existing_file(self, paper_file, entry_point_text, replacement_text):
-        file_to_edit = paper.Paper.create_or_find_file(paper_file)
-        editor_entry_point = paper.Paper.seek_text(file_to_edit, entry_point_text)
+        file_to_edit = paper.find_file(paper_file)
+        editor_entry_point = paper.seek_text(file_to_edit, entry_point_text)
         with open(file_to_edit.file_name, 'w') as edit_file:
             edit_file.seek(file_to_edit.cursor_position)
             replacement_list = list(replacement_text)
