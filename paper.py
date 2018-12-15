@@ -12,26 +12,25 @@ import tempfile
 
 class Paper:
 
-    def __init__(self, file_name, cursor_position):
-        self.file_name = file_name
+    def __init__(self, cursor_position):
         self.cursor_position = 0
 
     def create_or_find_file(self):
-        if os.access(self.file_name, 6):
-            print("Accessing file: {}".format(self.file_name))
-        elif not posixpath.exists(self.file_name):
+        if os.access(self, 6):
+            print("Accessing file: {}".format(self))
+        elif not posixpath.exists(self):
             print("File Not Found or Unavailable")
             open_temp_file = input("Use Temporary File - Y/n")
             if open_temp_file == "Y":
                 with open(tempfile.TemporaryFile, 'w') as temp_file_handle:
-                    self.file_name = temp_file_handle
+                    self = temp_file_handle
                     self.cursor_position = 0
                 print("Created Temporary File")
             else:
                 raise Exception("Must have a file to write, erase, or edit.")
         else:
-            print("Created new file named {}".format(self.file_name))
-            with open(self.file_name, 'a') as text:
+            print("Created new file named {}".format(self))
+            with open(self, 'a') as text:
                 text.write()
                 self.cursor_position = 0
         return self
@@ -47,5 +46,13 @@ class Paper:
                 except:
                     raise Exception("Text Not Found")
         else:
-            print("{} was found, but is empty.".format(self.file_name))
+            print("{} was found, but is empty.".format(self))
         return paper_file
+
+    def put_text(self, string_to_write=None):
+        paper_file = self
+        if string_to_write is not None:
+            with open(paper_file, 'a') as text_file:
+                text_file.write(string_to_write)
+        else:
+            raise Exception("No text written")

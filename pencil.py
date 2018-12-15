@@ -69,9 +69,8 @@ class Pencil(WritingTool):
                 character = character
             parsed_text = parsed_text + character
         parsed_text = parsed_text + character
-        written_file = paper.Paper.create_or_find_file(paper_file)
-        with open(written_file, 'a') as target_file:
-            target_file.write(parsed_text)
+        file_to_write = paper.Paper.create_or_find_file(paper_file)
+        written_file = paper.Paper.put_text(file_to_write, parsed_text)
         return self, written_file
 
     def sharpen(self):
