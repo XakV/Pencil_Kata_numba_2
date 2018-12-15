@@ -7,7 +7,15 @@ Test Framework: pytest
 '''
 import posixpath
 import os
-import tempfile
+import string
+from random import randint, choice
+
+def random_file():
+   min_characters = 4
+   maximum_characters = 20
+   allchar = string.ascii_letters + string.digits
+   random_filename = "".join(choice(allchar) for x in range(randint(min_characters, maximum_characters)))
+   return random_filename
 
 
 class Paper:
@@ -19,15 +27,8 @@ class Paper:
         if os.access(self, 6):
             print("Accessing file: {}".format(self))
         elif not posixpath.exists(self):
-            print("File Not Found or Unavailable")
-            open_temp_file = input("Use Temporary File - Y/n")
-            if open_temp_file == "Y":
-                with open(tempfile.TemporaryFile, 'w') as temp_file_handle:
-                    self = temp_file_handle
-                    self.cursor_position = 0
-                print("Created Temporary File")
-            else:
-                raise Exception("Must have a file to write, erase, or edit.")
+            rand_file_name = random_file()
+            print("Generated random filename is {}".format(rand_file_name))
         else:
             print("Created new file named {}".format(self))
             with open(self, 'a') as text:
