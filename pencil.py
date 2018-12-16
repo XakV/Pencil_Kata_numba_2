@@ -30,22 +30,24 @@ class WritingTool:
 class Eraser(WritingTool):
 
 
-    def __init__(self,tool_id=None, eraser_durability=0):
+    def __init__(self,eraser_id=None, eraser_durability=0):
         super().__init__(self)
+        self.tool_id = eraser_id
         self.durability = eraser_durability
 
     def erase(self, filename, string_to_erase):
         erased_string = ''
         for character in string_to_erase:
-            self.eraser_durability = self.degrade_writing_tool(character)
-            if self.eraser_durability < 0:
+            self.degrade_writing_tool(character)
+            if self.durability < 0:
                 character = character
-                self.eraser_durability = 0
+                self.durability = 0
             else:
                 character = ' '
             erased_string += character
-        file_to_erase = paper.find_file(paper_file)
-        erased_file = paper.put_text(file_to_erase, parsed_text)
+        file_to_erase = paper.find_file(filename)
+        cursor_position = paper.seek_text(file_to_erase, string_to_erase)
+        erased_file = paper.put_text(file_to_erase, erased_string, cursor_position)
         return self, erased_file
 
 
