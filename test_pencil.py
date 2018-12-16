@@ -144,7 +144,7 @@ def test_edit_write_new_text_over_erased_whitespace():
     erase_word = "dogs"
     replace_word = "cats"
     edit_test_file = paper.random_file()
-    edit_test_pencil = PencilWithEraser("edit_test_pencil", 100, 100, "edit_eraser", 100)
+    edit_test_pencil = Pencil("edit_test_pencil", 100, 100, 100)
     edit_test_pencil, first_write_file = edit_test_pencil.write_text(edit_test_pencil, initial_written_text,)
     edit_test_pencil, erased_text = edit_test_pencil.erase("edit_test_pencil", first_write_file, erase_word)
     edit_test_pencil, final_text = edit_test_pencil.edit(erased_text, replace_word, start_text_position)
@@ -155,7 +155,7 @@ def test_edit_writing_new_characters_over_existing_replaces_the_existing_text_wi
     erase_word = "dogs"
     replace_word = "robot vacuum cleaners"
     overwrite_test = paper.random_file()
-    edit_test_pencil = Pencil("edit_test_pencil", 100)
+    edit_test_pencil = Pencil("edit_test_pencil", 100, 100, 100)
     edit_test_pencil, first_write = edit_test_pencil.write_text(initial_written_text, overwrite_test)
     edit_test_pencil, erased_text = edit_test_pencil.erase(first_write, erase_word)
     edit_test_pencil, final_text = edit_test_pencil.edit(erased_text, replace_word, start_text_position)
