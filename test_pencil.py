@@ -113,8 +113,8 @@ def test_an_eraser_will_remove_the_last_instance_of_the_text_its_directed_to_era
 
 
 def test_when_a_pencil_is_created_it_can_be_given_a_value_for_eraser_durability():
-    pencil_with_eraser = PencilWithEraser("_pencil_with_eraser", 10, 10, "eraser_on_pencil", 10)
-    assert pencil_with_eraser.eraser_durability == 10
+    pencil_with_eraser = {"_pencil": Pencil("_pencil_with_eraser", 10, 10), "with_eraser": Eraser(None, 10)}
+    assert pencil_with_eraser['with_eraser'].durability == 10
 
 
 def test_erasing_any_non_space_character_degrades_the_eraser_durability_by_one():
