@@ -26,14 +26,21 @@ class WritingTool:
             raise Exception("Unexpected Character Found")
         return self
 
+    def push_changes(self, altered_text, string_to_operate_on=None, filename=None):
+        filename = paper.find_file(filename)
+        if string_to_operate_on:
+            cursor_position = paper.seek_text(filename, string_to_operate_on=None)
+            changed_file = paper.put_text(filename, altered_text, cursor_position)
+        else:
+            changed_file = paper.put_text(filename, altered_text)
+        return filename
+
 
 class Eraser(WritingTool):
 
 
-    def __init__(self,eraser_id=None, eraser_durability=0):
-        super().__init__(self)
-        self.tool_id = eraser_id
-        self.durability = eraser_durability
+    def __init__(self,tool_id=None, durability=0):
+        super().__init__(tool_id, durability)
 
     def erase(self, filename, string_to_erase):
         erased_string = ''
@@ -45,22 +52,21 @@ class Eraser(WritingTool):
             else:
                 character = ' '
             erased_string += character
-        file_to_erase = paper.find_file(filename)
-        cursor_position = paper.seek_text(file_to_erase, string_to_erase)
-        erased_file = paper.put_text(file_to_erase, erased_string, cursor_position)
+        erased_file = self.push_changes(erased_string, string_to_erase, filename)
         return self, erased_file
 
 
 
-class Pencil(WritingTool):
+class Pencil(WritingTool, Eraser):
 
-    def __init__(self, pencil_id, point=0, length=None):
-        super().__init__(self)
-        self.tool_id = pencil_id
-        self.durability = point
+    def __init__(self, tool_id, durability=0, length=None, eraser_durability=0):
+        WritingTool.__init__(tool_id, durability)
         self.length = length
-        self.upper_case_character_wear = self.upper_case_character_wear * 2
+        self.upper_case_character_wear = 2
         self.starting_durability = self.durability
+        Eraser.__init__(tool_id, eraser_durability)
+        Eraser.durability = eraser_durability
+        self.eraser_durability = Eraser.durability
 
     def write_text(self, text_to_write, paper_file):
         parsed_text = ''
@@ -72,9 +78,32 @@ class Pencil(WritingTool):
             else:
                 character = character
             parsed_text = parsed_text + character
-        file_to_write = paper.find_file(paper_file)
-        written_file = paper.put_text(file_to_write, parsed_text)
+        written_file = self.push_changes(parsed_text, paper_file)
         return self, written_file
+
+    def edit_existing_file(self, paper_file, entry_point_text, replacement_text):
+        file_to_edit = paper.find_file(paper_file)
+        editor_entry_point = paper.seek_text(file_to_edit, entry_point_text)
+        with open(file_to_edit, 'w+') as edit_file:
+            edit_file.seek(editor_entry_point, 0)
+            editing_string = edit_file.read()
+            edit_index = 0
+            parsed_replacement_text = ''
+            while self.durability >= 0 and edit_index < len(editing_string):
+                for character in replacement_text:
+                    self.degrade_writing_tool(replacement_text)
+                    if editing_string[edit_index].isspace():
+                        parsed_replacement_text += character
+                    elif editing_string[edit_index].isprintable():
+                        parsed_replacement_text += '@'
+                    edit_index += 1
+            file_to_edit = self.push_changes(parsed_replacement_text, entry_point_text, file_to_edit)
+        if self.durability > 0 and edit_index >= len(editing_string):
+            file_to_edit = self.write_text(replacement_text[:edit_index], file_to_edit)
+        else:
+            print("Unknown error occurred or pencil dulled trying to edit file {}".format(paper_file))
+        return self, file_to_edit
+
 
     def sharpen(self):
         if self.length <= 0:
@@ -85,39 +114,3 @@ class Pencil(WritingTool):
             print("Pencil sharpened. New durability is {}".format(self.durability))
             print("Resulting pencil length is now {}".format(self.length))
         return self
-
-
-class EditorTool:
-
-    def __init__(self):
-        self.pencil = Pencil
-        self.eraser = Eraser
-
-    def edit_existing_file(self, paper_file, entry_point_text, replacement_text):
-        file_to_edit = paper.find_file(paper_file)
-        editor_entry_point = paper.seek_text(file_to_edit, entry_point_text)
-        with open(file_to_edit.file_name, 'w') as edit_file:
-            edit_file.seek(file_to_edit.cursor_position)
-            replacement_list = list(replacement_text)
-            try:
-                existing_characters_list = list(edit_file.read())
-                for character_position in range(0, len(replacement_list)):
-                    if existing_characters_list[character_position].isspace():
-                        self.pencil = self.pencil.degrade_writing_tool(replacement_text[character_position])
-                        if self.pencil.durability >= 0:
-                            edit_file.write(replacement_character)
-                        else:
-                            edit_file.write(' ')
-                            self.pencil.durability == 0
-                    elif existing_characters_list[character_position].isprintable() == False:
-                        raise Exception("End of Line or non-printable character encountered")
-                    elif existing_characters_list[character_position].isprintable() and not existing_characters_list[character_position].isspace() == False:
-                        self.pencil = self.pencil.degrade_writing_tool(replacement_text[character_position])
-                        if self.pencil.durability >= 0:
-                            edit_file.write("@")
-                        else:
-                            print("Pencil Point is dull.")
-            except:
-                print("Unknown error occurred trying to edit file {}".format(paper_file))
-        return self, paper_file
-

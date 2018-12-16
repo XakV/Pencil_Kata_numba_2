@@ -32,16 +32,13 @@ def find_file(filename):
 
 
 def seek_text(filename=None, string_to_operate_on=None):
-    cursor_position = None
     if filename is not None and string_to_operate_on is not None:
         with open(filename, 'r') as text:
             existing_text = text.read()
-            try:
-                cursor_position = existing_text.rfind(string_to_operate_on)
-            except:
-                raise Exception("Text Not Found")
+            cursor_position = existing_text.rfind(string_to_operate_on)
     else:
         print("{} was found, but is empty.".format(filename))
+        cursor_position = 0
     return cursor_position
 
 def put_text(filename, string_to_write=None, starting_char=None):
