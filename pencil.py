@@ -1,16 +1,27 @@
 import paper
 
 
+def push_text(text=None, filename=None):
+    filename = paper.find_file(filename)
+    changed_file = paper.put_text(filename, text)
+    return changed_file
+
+
+def replace_text(text_replaced=None, new_text=None, filename=None):
+    filename = paper.find_file(filename)
+    cursor_position = paper.seek_text(filename, text_replaced)
+    changed_file = paper.put_text(filename, new_text, cursor_position)
+    return changed_file, cursor_position
+
+
 class WritingTool:
 
     lower_case_character_wear = 1
     upper_case_character_wear = 1
     other_printable_char_wear = 1
 
-    def __init__(self, tool_id, durability=None):
-        self.tool_id = tool_id
+    def __init__(self, durability=None):
         self.durability = durability
-
 
     def degrade_writing_tool(self, character):
         if character.isupper():
@@ -25,21 +36,10 @@ class WritingTool:
             raise Exception("Unexpected Character Found")
         return self
 
-    def push_text(self, text=None, filename=None):
-        filename = paper.find_file(filename)
-        changed_file = paper.put_text(filename, text)
-        return changed_file
-
-    def replace_text(self, text_replaced=None, new_text=None, filename=None):
-        filename = paper.find_file(filename)
-        cursor_position = paper.seek_text(filename, text_replaced)
-        changed_file = paper.put_text(filename, new_text, cursor_position)
-        return changed_file
-
 
 class Eraser(WritingTool):
-    def __init__(self,tool_id=None, durability=0):
-        WritingTool.__init__(self, tool_id, durability)
+    def __init__(self, durability=0):
+        WritingTool.__init__(self, durability)
         self.eraser_durability = durability
 
     def erase(self, filename, string_to_erase):
@@ -52,13 +52,13 @@ class Eraser(WritingTool):
             else:
                 character = ' '
             erased_string += character
-        erased_file = self.replace_text(string_to_erase, erased_string, filename)
-        return self, erased_file
+        erased_file, cursor_position = replace_text(string_to_erase, erased_string, filename)
+        return self, erased_file, cursor_position
 
 
 class Pencil(WritingTool):
-    def __init__(self, tool_id, durability=0, length=None):
-        WritingTool.__init__(self, tool_id, durability)
+    def __init__(self, durability=0, length=None):
+        WritingTool.__init__(self, durability)
         self.length = length
         self.upper_case_character_wear = 2
         self.starting_durability = self.durability
@@ -73,7 +73,7 @@ class Pencil(WritingTool):
             else:
                 character = character
             parsed_text = parsed_text + character
-        written_file = self.push_text(parsed_text, paper_file)
+        written_file = push_text(parsed_text, paper_file)
         return self, written_file
 
     def edit_existing_file(self, paper_file, entry_point_text, replacement_text):
@@ -92,13 +92,12 @@ class Pencil(WritingTool):
                     elif editing_string[edit_index].isprintable():
                         parsed_replacement_text += '@'
                     edit_index += 1
-            file_to_edit = self.replace_text(entry_point_text, parsed_replacement_text, file_to_edit)
+            file_to_edit, cursor_position = replace_text(entry_point_text, parsed_replacement_text, file_to_edit)
         if self.durability > 0 and edit_index >= len(editing_string):
-            file_to_edit = self.push_text(replacement_text[:edit_index], file_to_edit)
+            file_to_edit = push_text(replacement_text[:edit_index], file_to_edit)
         else:
             print("Unknown error occurred or pencil dulled trying to edit file {}".format(paper_file))
         return self, file_to_edit
-
 
     def sharpen(self):
         if self.length <= 0:
@@ -110,8 +109,9 @@ class Pencil(WritingTool):
             print("Resulting pencil length is now {}".format(self.length))
         return self
 
+
 class PencilAndEraser(Pencil, Eraser):
-    def __init__(self, pencil_id=None, pencil_durability=0, length=0, eraser_id=None, eraser_durability=0):
-        Pencil.__init__(self, pencil_id, pencil_durability, length)
-        Eraser.__init__(self, eraser_id, eraser_durability)
+    def __init__(self, pencil_durability=0, length=0, eraser_durability=0):
+        Pencil.__init__(self, pencil_durability, length)
+        Eraser.__init__(self, eraser_durability)
         self.eraser_durability = eraser_durability

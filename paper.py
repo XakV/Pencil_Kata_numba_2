@@ -41,6 +41,7 @@ def seek_text(filename=None, string_to_operate_on=None):
         cursor_position = 0
     return cursor_position
 
+
 def put_text(filename, string_to_write=None, starting_char=None):
     if string_to_write is not None and starting_char is None:
         with open(filename, 'a') as text_file:
