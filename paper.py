@@ -10,12 +10,13 @@ import os
 import string
 from random import randint, choice
 
+
 def random_file():
-   min_characters = 4
-   maximum_characters = 20
-   allchar = string.ascii_letters + string.digits
-   random_filename = "/tmp/" + "".join(choice(allchar) for x in range(randint(min_characters, maximum_characters)))
-   return random_filename
+    min_characters = 4
+    maximum_characters = 20
+    allchar = string.ascii_letters + string.digits
+    random_filename = "/tmp/" + "".join(choice(allchar) for x in range(randint(min_characters, maximum_characters)))
+    return random_filename
 
 
 def find_file(filename):
@@ -48,6 +49,7 @@ def put_text(filename, string_to_write=None, starting_char=None):
             text_file.write(string_to_write)
     elif string_to_write is not None and starting_char is not None:
         with open(filename, 'r+') as text_file:
+            read_text = text_file.read()
             text_file.seek(starting_char, 0)
             text_file.write(string_to_write)
     else:

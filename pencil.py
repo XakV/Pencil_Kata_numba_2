@@ -76,25 +76,32 @@ class Pencil(WritingTool):
         written_file = push_text(parsed_text, paper_file)
         return self, written_file
 
-    def edit_existing_file(self, paper_file, entry_point_text, replacement_text):
+    def edit_existing_file(self, paper_file, replacement_text, entry_point):
         file_to_edit = paper.find_file(paper_file)
-        editor_entry_point = paper.seek_text(file_to_edit, entry_point_text)
-        with open(file_to_edit, 'w+') as edit_file:
-            edit_file.seek(editor_entry_point, 0)
-            editing_string = edit_file.read()
-            edit_index = 0
-            parsed_replacement_text = ''
-            while self.durability >= 0 and edit_index < len(editing_string):
-                for character in replacement_text:
+        edit_index = 0
+        parsed_replacement_text = ''
+        with open(file_to_edit, 'r+') as edit_file:
+            text_read = edit_file.read()
+            editing_string = text_read[entry_point:]
+            print(editing_string)
+            for character in replacement_text:
+                while self.durability >= 0:
                     self.degrade_writing_tool(replacement_text)
-                    if editing_string[edit_index].isspace():
-                        parsed_replacement_text += character
-                    elif editing_string[edit_index].isprintable():
-                        parsed_replacement_text += '@'
-                    edit_index += 1
-            file_to_edit, cursor_position = replace_text(entry_point_text, parsed_replacement_text, file_to_edit)
-        if self.durability > 0 and edit_index >= len(editing_string):
-            file_to_edit = push_text(replacement_text[:edit_index], file_to_edit)
+                    try:
+                        print("Evaluating {} - the {}th character".format(character, edit_index))
+                        print("Editing string at this index is - {}".format(editing_string[edit_index]))
+                        if editing_string[edit_index].isspace():
+                            parsed_replacement_text += character
+                        elif editing_string[edit_index].isprintable():
+                            parsed_replacement_text += '@'
+                        else:
+                            pass
+                        edit_index += 1
+                    except IndexError:
+                        print("End of File, trying to append remaining text.")
+            file_to_edit, cursor_position = replace_text(editing_string[:edit_index], parsed_replacement_text, file_to_edit)
+        if self.durability > 0 and edit_index <= len(editing_string):
+            file_to_edit = push_text(replacement_text[edit_index:], file_to_edit)
         else:
             print("Unknown error occurred or pencil dulled trying to edit file {}".format(paper_file))
         return self, file_to_edit
