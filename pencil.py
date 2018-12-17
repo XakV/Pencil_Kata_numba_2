@@ -25,14 +25,16 @@ class WritingTool:
             raise Exception("Unexpected Character Found")
         return self
 
-    def push_changes(self, altered_text, string_to_operate_on=None, filename=None):
+    def push_text(self, text=None, filename=None):
         filename = paper.find_file(filename)
-        if string_to_operate_on:
-            cursor_position = paper.seek_text(filename, string_to_operate_on=None)
-            changed_file = paper.put_text(filename, altered_text, cursor_position)
-        else:
-            changed_file = paper.put_text(filename, altered_text)
-        return filename
+        changed_file = paper.put_text(filename, text)
+        return changed_file
+
+    def replace_text(self, text_replaced=None, new_text=None, filename=None):
+        filename = paper.find_file(filename)
+        cursor_position = paper.seek_text(filename, text_replaced)
+        changed_file = paper.put_text(filename, new_text, cursor_position)
+        return changed_file
 
 
 class Eraser(WritingTool):
@@ -50,7 +52,7 @@ class Eraser(WritingTool):
             else:
                 character = ' '
             erased_string += character
-        erased_file = self.push_changes(erased_string, string_to_erase, filename)
+        erased_file = self.replace_text(string_to_erase, erased_string, filename)
         return self, erased_file
 
 
@@ -71,7 +73,7 @@ class Pencil(WritingTool):
             else:
                 character = character
             parsed_text = parsed_text + character
-        written_file = self.push_changes(parsed_text, paper_file)
+        written_file = self.push_text(parsed_text, paper_file)
         return self, written_file
 
     def edit_existing_file(self, paper_file, entry_point_text, replacement_text):
@@ -90,9 +92,9 @@ class Pencil(WritingTool):
                     elif editing_string[edit_index].isprintable():
                         parsed_replacement_text += '@'
                     edit_index += 1
-            file_to_edit = self.push_changes(parsed_replacement_text, entry_point_text, file_to_edit)
+            file_to_edit = self.replace_text(entry_point_text, parsed_replacement_text, file_to_edit)
         if self.durability > 0 and edit_index >= len(editing_string):
-            file_to_edit = self.write_text(replacement_text[:edit_index], file_to_edit)
+            file_to_edit = self.push_text(replacement_text[:edit_index], file_to_edit)
         else:
             print("Unknown error occurred or pencil dulled trying to edit file {}".format(paper_file))
         return self, file_to_edit

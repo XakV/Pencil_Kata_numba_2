@@ -26,7 +26,7 @@ def test_paper_should_reflect_that_text_is_written_and_recorded():
     test_pencil = Pencil('test_pencil', 100, 100)
     test_text = "Show me written text"
     test_paper = paper.random_file()
-    test_pencil, written_text = test_pencil.write_text(test_text, test_paper)
+    test_pencil, test_paper = test_pencil.write_text(test_text, test_paper)
     with open(test_paper, 'r') as paper_file:
         test_paper_result = paper_file.read()
     assert test_paper_result == test_text
