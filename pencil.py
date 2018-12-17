@@ -8,7 +8,6 @@ class WritingTool:
     other_printable_char_wear = 1
 
     def __init__(self, tool_id, durability=None):
-
         self.tool_id = tool_id
         self.durability = durability
 
@@ -37,10 +36,9 @@ class WritingTool:
 
 
 class Eraser(WritingTool):
-
-
     def __init__(self,tool_id=None, durability=0):
-        super().__init__(tool_id, durability)
+        WritingTool.__init__(self, tool_id, durability)
+        self.eraser_durability = durability
 
     def erase(self, filename, string_to_erase):
         erased_string = ''
@@ -56,17 +54,12 @@ class Eraser(WritingTool):
         return self, erased_file
 
 
-
-class Pencil(WritingTool, Eraser):
-
-    def __init__(self, tool_id, durability=0, length=None, eraser_durability=0):
-        WritingTool.__init__(tool_id, durability)
+class Pencil(WritingTool):
+    def __init__(self, tool_id, durability=0, length=None):
+        WritingTool.__init__(self, tool_id, durability)
         self.length = length
         self.upper_case_character_wear = 2
         self.starting_durability = self.durability
-        Eraser.__init__(tool_id, eraser_durability)
-        Eraser.durability = eraser_durability
-        self.eraser_durability = Eraser.durability
 
     def write_text(self, text_to_write, paper_file):
         parsed_text = ''
@@ -114,3 +107,9 @@ class Pencil(WritingTool, Eraser):
             print("Pencil sharpened. New durability is {}".format(self.durability))
             print("Resulting pencil length is now {}".format(self.length))
         return self
+
+class PencilAndEraser(Pencil, Eraser):
+    def __init__(self, pencil_id=None, pencil_durability=0, length=0, eraser_id=None, eraser_durability=0):
+        Pencil.__init__(self, pencil_id, pencil_durability, length)
+        Eraser.__init__(self, eraser_id, eraser_durability)
+        self.eraser_durability = eraser_durability
