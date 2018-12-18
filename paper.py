@@ -47,11 +47,13 @@ def put_text(filename, string_to_write=None, starting_char=None):
     if string_to_write is not None and starting_char is None:
         with open(filename, 'a') as text_file:
             text_file.write(string_to_write)
+            cursor_position = text_file.tell()
     elif string_to_write is not None and starting_char is not None:
         with open(filename, 'r+') as text_file:
             read_text = text_file.read()
             text_file.seek(starting_char, 0)
             text_file.write(string_to_write)
+            cursor_position = text_file.tell()
     else:
         raise Exception("No text written")
-    return filename
+    return filename, cursor_position

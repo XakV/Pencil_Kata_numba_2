@@ -144,7 +144,7 @@ def test_edit_write_new_text_over_erased_whitespace():
     edit_test_pencil = PencilAndEraser(100, 100, 100)
     edit_test_pencil, first_write_file = edit_test_pencil.write_text(initial_written_text, edit_test_file)
     edit_test_pencil, erased_text, start_text_position = edit_test_pencil.erase(first_write_file, erase_word)
-    edit_test_pencil, final_text = edit_test_pencil.edit_existing_file(erased_text, replace_word, start_text_position)
+    edit_test_pencil, final_text, cursor_pos = edit_test_pencil.edit_existing_file(erased_text, replace_word, start_text_position)
     assert final_text == "Call in the cats and put out the fire!"
 
 def test_edit_writing_new_characters_over_existing_replaces_the_existing_text_with_an_at_sign():
@@ -155,5 +155,5 @@ def test_edit_writing_new_characters_over_existing_replaces_the_existing_text_wi
     edit_test_pencil = PencilAndEraser(100, 100, 100)
     edit_test_pencil, first_write = edit_test_pencil.write_text(initial_written_text, overwrite_test)
     edit_test_pencil, erased_text, start_text_position = edit_test_pencil.erase(first_write, erase_word)
-    edit_test_pencil, final_text = edit_test_pencil.edit_existing_file(erased_text, replace_word, start_text_position)
+    edit_test_pencil, final_text, cursor_pos = edit_test_pencil.edit_existing_file(erased_text, replace_word, start_text_position)
     assert final_text == "Call in the robot@@@c@@@ @@@a@@@@fire!"

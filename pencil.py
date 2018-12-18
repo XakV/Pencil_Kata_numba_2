@@ -9,8 +9,11 @@ def push_text(text=None, filename=None):
 
 def replace_text(text_replaced=None, new_text=None, filename=None):
     filename = paper.find_file(filename)
-    cursor_position = paper.seek_text(filename, text_replaced)
-    changed_file = paper.put_text(filename, new_text, cursor_position)
+    if type(text_replaced) == str:
+        cursor_position = paper.seek_text(filename, text_replaced)
+        changed_file = paper.put_text(filename, new_text, cursor_position)
+    else:
+        changed_file = paper.put_text(filename, new_text, text_replaced)
     return changed_file, cursor_position
 
 
@@ -77,6 +80,7 @@ class Pencil(WritingTool):
         return self, written_file
 
     def edit_existing_file(self, paper_file, replacement_text, entry_point):
+        print("File is {} - Repl Text is {} - Entry Point is {}".format(paper_file, replacement_text, entry_point))
         parsed_replacement_text = ''
         for character in replacement_text:
             if self.durability <= 0:
@@ -89,16 +93,18 @@ class Pencil(WritingTool):
         replacement_len = len(parsed_replacement_text)
         with open(paper_file, 'r+') as edit_file:
             file_text = edit_file.read()
-            begin_edit = file_text[:entry_point]
+            begin_edit = file_text[entry_point:]
+            print("beginning to edit string {}".format(begin_edit))
         compared_replacement_text = ''
         for old_character in begin_edit[:replacement_len]:
+            replacement_position = begin_edit.index(old_character)
             if old_character.isspace():
-                begin_edit.insert(parsed_replacement_text, begin_edit.index(old_character))
+                compared_replacement_text += parsed_replacement_text[replacement_position]
             else:
-                begin_edit.insert('@', begin_edit.index(old_character))
-            begin_edit.pop(old_character)
-        paper_file, cursor_position = replace_text(begin_edit[:replacement_len], begin_edit, paper_file)
-#TODO - may this where we use a regex sub
+                compared_replacement_text += '@'
+        paper_file, cursor_position = replace_text(entry_point, compared_replacement_text, paper_file)
+        return self, paper_file, cursor_position
+
     def sharpen(self):
         if self.length <= 0:
             print("Can't sharpen this pencil. It is too short.")
