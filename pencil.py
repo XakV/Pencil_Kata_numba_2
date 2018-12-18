@@ -1,20 +1,16 @@
 import paper
 
 
-def push_text(text=None, filename=None):
-    filename = paper.find_file(filename)
-    changed_file = paper.put_text(filename, text)
-    return changed_file
-
-
-def replace_text(text_replaced=None, new_text=None, filename=None):
-    filename = paper.find_file(filename)
-    if type(text_replaced) == str:
-        cursor_position = paper.seek_text(filename, text_replaced)
-        changed_file = paper.put_text(filename, new_text, cursor_position)
-    else:
-        changed_file = paper.put_text(filename, new_text, text_replaced)
-    return changed_file, cursor_position
+def replace_chardict_with_char_list(edited_dict):
+    new_char_list = []
+    for first_char, second_char in edited_dict:
+        if first_char.isprintable() and not str(first_char).isspace():
+            new_char_list.append('@')
+            print("'@' appended")
+        else:
+            new_char_list.append(second_char)
+            print("{} appended".format(second_char))
+    return new_char_list
 
 
 class WritingTool:
@@ -45,9 +41,9 @@ class Eraser(WritingTool):
         WritingTool.__init__(self, durability)
         self.eraser_durability = durability
 
-    def erase(self, filename, string_to_erase):
+    def erase(self, original_string, substring_to_erase):
         erased_string = ''
-        for character in string_to_erase:
+        for character in substring_to_erase:
             self.degrade_writing_tool(character)
             if self.durability < 0:
                 character = character
@@ -55,8 +51,15 @@ class Eraser(WritingTool):
             else:
                 character = ' '
             erased_string += character
-        erased_file, cursor_position = replace_text(string_to_erase, erased_string, filename)
-        return self, erased_file, cursor_position
+        erase_location = original_string.rfind(substring_to_erase)
+        string_before_erase = original_string[:erase_location]
+        len_of_erase = len(substring_to_erase)
+        original_string_len = len(original_string)
+        if len_of_erase + erase_location >= original_string_len:
+            string_after_erase = string_before_erase + erased_string
+        else:
+            string_after_erase = string_before_erase + erased_string + original_string[(erase_location + len_of_erase):]
+        return string_after_erase
 
 
 class Pencil(WritingTool):
@@ -66,7 +69,7 @@ class Pencil(WritingTool):
         self.upper_case_character_wear = 2
         self.starting_durability = self.durability
 
-    def write_text(self, text_to_write, paper_file):
+    def write_text(self, existing_text=None, text_to_write=None):
         parsed_text = ''
         for character in text_to_write:
             self.degrade_writing_tool(character)
@@ -76,34 +79,12 @@ class Pencil(WritingTool):
             else:
                 character = character
             parsed_text = parsed_text + character
-        written_file = push_text(parsed_text, paper_file)
-        return self, written_file
+        if existing_text is not None:
+            written_text = existing_text + parsed_text
+        else:
+            written_text = parsed_text
+        return written_text
 
-    def edit_existing_file(self, paper_file, replacement_text, entry_point):
-        print("File is {} - Repl Text is {} - Entry Point is {}".format(paper_file, replacement_text, entry_point))
-        parsed_replacement_text = ''
-        for character in replacement_text:
-            if self.durability <= 0:
-                self.degrade_writing_tool(replacement_text)
-                character = " "
-                self.durability = 0
-            else:
-                character = character
-            parsed_replacement_text += character
-        replacement_len = len(parsed_replacement_text)
-        with open(paper_file, 'r+') as edit_file:
-            file_text = edit_file.read()
-            begin_edit = file_text[entry_point:]
-            print("beginning to edit string {}".format(begin_edit))
-        compared_replacement_text = ''
-        for old_character in begin_edit[:replacement_len]:
-            replacement_position = begin_edit.index(old_character)
-            if old_character.isspace():
-                compared_replacement_text += parsed_replacement_text[replacement_position]
-            else:
-                compared_replacement_text += '@'
-        paper_file, cursor_position = replace_text(entry_point, compared_replacement_text, paper_file)
-        return self, paper_file, cursor_position
 
     def sharpen(self):
         if self.length <= 0:
@@ -120,4 +101,23 @@ class PencilAndEraser(Pencil, Eraser):
     def __init__(self, pencil_durability=0, length=0, eraser_durability=0):
         Pencil.__init__(self, pencil_durability, length)
         Eraser.__init__(self, eraser_durability)
+        WritingTool.__init__(self, durability=pencil_durability)
         self.eraser_durability = eraser_durability
+
+    def edit(self, initial_text, erased_word, erased_text, replacement_text):
+        begin_replace = initial_text.rfind(erased_word)
+        phrase_to_edit = erased_text[begin_replace:]
+        remainder_text = initial_text[(begin_replace + len(replacement_text)):]
+        written_replacement_text = self.write_text(None, replacement_text)
+        edit_dict = zip(list(phrase_to_edit), list(written_replacement_text))
+        complete_edited_list = replace_chardict_with_char_list(edit_dict)
+        complete_edit_string = ''.join(complete_edited_list)
+        start_phrase = initial_text[:begin_replace]
+        if len(start_phrase) + len(complete_edit_string) >= len(initial_text):
+            edited_text = start_phrase + complete_edit_string
+        else:
+            edited_text = start_phrase + complete_edit_string + remainder_text
+        print(edited_text)
+        print("DONE")
+        return edited_text
+
