@@ -1,0 +1,4 @@
+1. write tests for UI
+2. write UI
+3. run coverage.py
+4. final refactor
