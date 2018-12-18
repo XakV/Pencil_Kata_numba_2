@@ -106,13 +106,21 @@ class PencilAndEraser(Pencil, Eraser):
 
     def edit(self, initial_text, erased_word, erased_text, replacement_text):
         begin_replace = initial_text.rfind(erased_word)
+        print(begin_replace)
         phrase_to_edit = erased_text[begin_replace:]
+        print(phrase_to_edit)
         remainder_text = initial_text[(begin_replace + len(replacement_text)):]
+        print(remainder_text)
         written_replacement_text = self.write_text(None, replacement_text)
+        print(written_replacement_text)
         edit_dict = zip(list(phrase_to_edit), list(written_replacement_text))
+        print(edit_dict)
         complete_edited_list = replace_chardict_with_char_list(edit_dict)
+        print(complete_edited_list)
         complete_edit_string = ''.join(complete_edited_list)
+        print(complete_edit_string)
         start_phrase = initial_text[:begin_replace]
+        print(start_phrase)
         if len(start_phrase) + len(complete_edit_string) >= len(initial_text):
             edited_text = start_phrase + complete_edit_string
         else:

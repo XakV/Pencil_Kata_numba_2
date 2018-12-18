@@ -125,4 +125,4 @@ def test_edit_writing_new_characters_over_existing_replaces_the_existing_text_wi
     edit_test_pencil = PencilAndEraser(100, 100, 100)
     erased_text = edit_test_pencil.erase(initial_written_text, erase_word)
     overwritten_text = edit_test_pencil.edit(initial_written_text, erase_word, erased_text, replace_word)
-    assert overwritten_text == "Call in the robot@@@c@@@ @@@a@@@@fire!"
+    assert overwritten_text == "Call in the robot@@@c@@@ @@@a@@@sfire!"
