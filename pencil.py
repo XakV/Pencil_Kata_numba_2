@@ -77,35 +77,28 @@ class Pencil(WritingTool):
         return self, written_file
 
     def edit_existing_file(self, paper_file, replacement_text, entry_point):
-        file_to_edit = paper.find_file(paper_file)
-        edit_index = 0
         parsed_replacement_text = ''
-        with open(file_to_edit, 'r+') as edit_file:
-            text_read = edit_file.read()
-            editing_string = text_read[entry_point:]
-            print(editing_string)
-            for character in replacement_text:
-                while self.durability >= 0:
-                    self.degrade_writing_tool(replacement_text)
-                    try:
-                        print("Evaluating {} - the {}th character".format(character, edit_index))
-                        print("Editing string at this index is - {}".format(editing_string[edit_index]))
-                        if editing_string[edit_index].isspace():
-                            parsed_replacement_text += character
-                        elif editing_string[edit_index].isprintable():
-                            parsed_replacement_text += '@'
-                        else:
-                            pass
-                        edit_index += 1
-                    except IndexError:
-                        print("End of File, trying to append remaining text.")
-            file_to_edit, cursor_position = replace_text(editing_string[:edit_index], parsed_replacement_text, file_to_edit)
-        if self.durability > 0 and edit_index <= len(editing_string):
-            file_to_edit = push_text(replacement_text[edit_index:], file_to_edit)
-        else:
-            print("Unknown error occurred or pencil dulled trying to edit file {}".format(paper_file))
-        return self, file_to_edit
-
+        for character in replacement_text:
+            if self.durability <= 0:
+                self.degrade_writing_tool(replacement_text)
+                character = " "
+                self.durability = 0
+            else:
+                character = character
+            parsed_replacement_text += character
+        replacement_len = len(parsed_replacement_text)
+        with open(paper_file, 'r+') as edit_file:
+            file_text = edit_file.read()
+            begin_edit = file_text[:entry_point]
+        compared_replacement_text = ''
+        for old_character in begin_edit[:replacement_len]:
+            if old_character.isspace():
+                begin_edit.insert(parsed_replacement_text, begin_edit.index(old_character))
+            else:
+                begin_edit.insert('@', begin_edit.index(old_character))
+            begin_edit.pop(old_character)
+        paper_file, cursor_position = replace_text(begin_edit[:replacement_len], begin_edit, paper_file)
+#TODO - may this where we use a regex sub
     def sharpen(self):
         if self.length <= 0:
             print("Can't sharpen this pencil. It is too short.")
