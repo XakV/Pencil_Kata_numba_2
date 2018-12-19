@@ -1,8 +1,10 @@
 import paper
 from pencil import *
+import os, posix, subprocess
 
 def test_calling_the_pencil_executable_runs_the_program():
-    pass
+    pencil_cli_exec_call = subprocess.check_output('python3', 'pencil_cli.py')
+    assert pencil_cli_exec_call == 0
 
 def test_the_program_parses_the_help_option():
     pass
