@@ -8,7 +8,10 @@ def test_calling_the_pencil_executable_runs_the_program():
     assert pencil_cli_std_out == 0
 
 def test_the_program_parses_the_help_option():
-    pass
+    pencil_cli_help_output = subprocess.Popen(['python3', 'pencil_cli.py', '--help'], shell=False)
+    pencil_stdout, pencil_stderr = pencil_cli_help_output.communicate()
+    assert pencil_stdout.startswith("pencil cli help")
+
 
 def test_the_program_displays_info_when_the_info_option_is_selected():
     pass
