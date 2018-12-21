@@ -1,12 +1,12 @@
-#!/usr/env/python3
+#!/home/zach/.local/share/virtualenvs/PencilKata-9hWe2-Zc/bin/python3
+
 
 import pencil
 import paper
 import click
 
-
 @click.command()
-@click.argument('--help', help='''The pencil cli tool can be called these modes \n
+@click.option('--help', '-h', help='''The pencil cli tool can be called these modes \n
                          ============================================= \n
                          "write" - simulates writing text to paper     \n
                                    lines wrap at 80 characters         \n
@@ -37,12 +37,10 @@ import click
                          
                          "quit"  - quits the program \n''',
 )
-def help(*args):
-    exit(0)
+@click.argument('help')
+def pencil_cli(help):
+    print(help)
 
-
-def main(**kwargs):
-    exit(0)
 
 if __name__ == '__main__':
-    main()
+    pencil_cli()
