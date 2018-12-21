@@ -4,11 +4,11 @@ import click
 
 
 def test_calling_the_pencil_executable_runs_the_program():
-    pencil_cli_std_out = subprocess.call(['./pencil_cli.py', 'help'], shell=False)
+    pencil_cli_std_out = subprocess.call(['./pencil_cli.py'], shell=False)
     assert pencil_cli_std_out == 0
 
 def test_the_program_parses_the_help_option():
-    pencil_cli_help_output = subprocess.call(['./pencil_cli.py', 'help'], shell=False)
+    pencil_cli_help_output = subprocess.call(['./pencil_cli.py', '--help'], shell=False)
     assert pencil_cli_help_output == 0
 
 

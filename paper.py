@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 '''
 Pencil Kata - Pillar Technology Apprentice Application
 Author: Zach Villers
