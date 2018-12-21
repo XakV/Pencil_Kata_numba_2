@@ -6,10 +6,8 @@ def replace_chardict_with_char_list(edited_dict):
     for first_char, second_char in edited_dict:
         if first_char.isprintable() and not str(first_char).isspace():
             new_char_list.append('@')
-            print("'@' appended")
         else:
             new_char_list.append(second_char)
-            print("{} appended".format(second_char))
     return new_char_list
 
 
