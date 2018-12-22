@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 
-import pencil
+from pencil import *
 import paper
 import click
 
@@ -40,6 +40,9 @@ def pencil_cli():
                          
                                                         \n
         "quit"  -   quits the program \n"""
+
+    # print the banner
+    banner()
 
 
 if __name__ == '__main__':

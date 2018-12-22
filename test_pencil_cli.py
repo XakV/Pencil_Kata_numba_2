@@ -1,6 +1,7 @@
 import subprocess
 from subprocess import PIPE
 import click
+from pencil import *
 
 
 def test_calling_the_pencil_executable_runs_the_program():
@@ -11,12 +12,9 @@ def test_the_program_parses_the_help_option():
     pencil_cli_help_output = subprocess.call(['./pencil_cli.py', '--help'], shell=False)
     assert pencil_cli_help_output == 0
 
-
-def test_the_program_displays_info_when_the_info_option_is_selected():
-    pass
-
-def test_the_program_displays_options_for_write_erase_and_edit_stats():
-    pass
+def test_when_pencil_program_is_called_with_no_arguments_it_displays_a_banner_and_menu():
+    pencil_cli_std_out = subprocess.run(['./pencil_cli.py'], stdout=subprocess.PIPE,)
+    assert pencil_cli_std_out.stdout == pencil_banner
 
 def test_the_program_will_save_a_file_in_text_format():
     pass
