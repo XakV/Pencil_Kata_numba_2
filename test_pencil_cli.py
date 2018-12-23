@@ -18,7 +18,9 @@ def test_the_program_will_save_a_file_in_text_format():
 def test_the_program_will_load_a_saved_file_and_display_the_contents():
     pass
 
-def test_the_program_will_display_the_text_written_in_real_time():
+def test_the_program_will_display_the_text_written():
+    writing_pencil = PencilAndEraser(100, 100)
+    
     pass
 
 def test_the_user_can_see_if_the_file_is_saved():
