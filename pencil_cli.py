@@ -42,7 +42,12 @@ def pencil_cli():
         "quit"  -   quits the program \n"""
 
     # print the banner
-    banner()
+    while True:
+        banner()
+        selection = menu()
+        print(selection)
+        if selection == str(7):
+            exit(0)
 
 
 if __name__ == '__main__':

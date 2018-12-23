@@ -12,10 +12,6 @@ def test_the_program_parses_the_help_option():
     pencil_cli_help_output = subprocess.call(['./pencil_cli.py', '--help'], shell=False)
     assert pencil_cli_help_output == 0
 
-def test_when_pencil_program_is_called_with_no_arguments_it_displays_a_banner_and_menu():
-    pencil_cli_std_out = subprocess.run(['./pencil_cli.py'], stdout=subprocess.PIPE,)
-    assert pencil_cli_std_out.stdout == pencil_banner
-
 def test_the_program_will_save_a_file_in_text_format():
     pass
 
@@ -47,13 +43,4 @@ def test_user_gets_an_error_message_when_selecting_an_invalid_program_option():
     pass
 
 def test_user_can_run_tests_by_using_the_test_arg_on_the_command_line():
-    pass
-
-def test_the_program_displays_a_header_and_menu_on_startup():
-    pass
-
-def test_user_can_exit_the_program_cleanly():
-    pass
-
-def test_program_works_with_a_screen_reader():
     pass

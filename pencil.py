@@ -15,6 +15,24 @@ def banner():
              ''')
 
 
+def menu():
+    print('''
+    Pencil Simulator Menu - Please make a selection
+    ================================================
+    
+     1 - Write Text With Pencil
+     2 - Erase Text
+     3 - Edit Text
+     4 - Save Text to Paper
+     5 - Open a Saved Paper
+     6 - Show Pencil and Eraser Status
+     7 - Exit Pencil Simulator
+    
+    ================================================
+   ''')
+    selection = input("Please make a selection: ")
+    return selection
+
 
 def replace_chardict_with_char_list(edited_dict):
     new_char_list = []
