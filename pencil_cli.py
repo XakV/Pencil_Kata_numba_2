@@ -47,6 +47,7 @@ def pencil_cli():
         selection = menu()
         print(selection)
         if selection == str(7):
+            print("Thanks for using Pencil Simulator 3000")
             exit(0)
 
 

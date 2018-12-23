@@ -2,11 +2,14 @@ import subprocess
 from subprocess import PIPE
 import click
 from pencil import *
-
+import io
 
 def test_calling_the_pencil_executable_runs_the_program():
-    pencil_cli_std_out = subprocess.call(['./pencil_cli.py'], shell=False)
-    assert pencil_cli_std_out == 0
+    call_pencil_cli = subprocess.Popen(['./pencil_cli.py'], shell=False, stdin=PIPE)
+    pencil_input = io.TextIOWrapper(call_pencil_cli.stdin, encoding='UTF-8', line_buffering=True)
+    call_pencil_cli.communicate(b'7')
+    output_of_call = call_pencil_cli.returncode
+    assert output_of_call == 0
 
 def test_the_program_parses_the_help_option():
     pencil_cli_help_output = subprocess.call(['./pencil_cli.py', '--help'], shell=False)
@@ -20,6 +23,12 @@ def test_the_program_will_load_a_saved_file_and_display_the_contents():
 
 def test_the_program_will_display_the_text_written():
     writing_pencil = PencilAndEraser(100, 100)
+    call_pencil_cli_write = subprocess.Popen(['./pencil_cli.py'], shell=False, stdin=PIPE, stdout=PIPE)
+    pencil_input = io.TextIOWrapper(call_pencil_cli_write.stdin, encoding='UTF-8', line_buffering=True)
+    call_pencil_cli_write.communicate(b'1')
+    call_pencil_cli_write.communicate(b'This test writes some text with pencil')
+    output_of_call = call_pencil_cli_write.returncode
+
     
     pass
 
