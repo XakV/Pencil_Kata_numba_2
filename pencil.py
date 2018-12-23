@@ -3,6 +3,7 @@
 import paper
 import click
 
+
 def banner():
     print('''
              =========================================================x
@@ -14,15 +15,26 @@ def banner():
              =========================================================x
              ''')
 
+def action(selection, current_pencil, current_paper):
+    if current_pencil is not None and current_paper is not None:
+        if selection == 'create_pencil':
+            current_pencil =
+
+
 @click.command()
 def show_menu():
     current_pencil = None
     current_paper = None
     action = None
     menu = 'main'
-    main_menu = {'T': 'text_menu', 't': 'text_menu', 'O': 'paper_menu','o': 'paper_menu', 'S': 'stats_menu', 's': 'stats_menu'}
-    text_menu = {'C': 'create_pencil', 'c': 'create_pencil', 'W': 'write', 'w': 'write'}
-    paper_menu = {'S': 'select_paper', 's': 'select_paper', 'E': 'erase', 'e': 'erase', 'C': 'edit', 'c': 'edit'}
+    main_menu = {'T': 'text_menu', 't': 'text_menu',
+                 'O': 'paper_menu', 'o': 'paper_menu',
+                 'S': 'stats_menu', 's': 'stats_menu'}
+    text_menu = {'C': 'create_pencil', 'c': 'create_pencil',
+                 'W': 'write', 'w': 'write'}
+    paper_menu = {'S': 'select_paper', 's': 'select_paper',
+                  'E': 'erase', 'e': 'erase',
+                  'C': 'edit', 'c': 'edit'}
     while True:
         if menu == 'main':
             click.echo('Pencil Simulator - Main Menu - Please make a selection')
@@ -57,7 +69,7 @@ def show_menu():
                 if select_key in ['B', 'b']:
                     menu = main_menu
                 if selection in select_key:
-                    action = option_val
+                    action_result = action(option_val)
                 else:
                     click.echo('You selected {} - which is not an option. Please try again'.format(selection))
         elif menu == 'paper_menu':
@@ -76,7 +88,7 @@ def show_menu():
                 if select_key in ['B', 'b']:
                     menu = main_menu
                 elif selection in select_key:
-                    action = option_val
+                    action_result = action(option_val)
                 else:
                     click.echo('You selected {} - which is not an option. Please try again'.format(selection))
 
@@ -92,7 +104,6 @@ def replace_chardict_with_char_list(edited_dict):
 
 
 class WritingTool:
-
     lower_case_character_wear = 1
     upper_case_character_wear = 1
     other_printable_char_wear = 1
@@ -163,7 +174,6 @@ class Pencil(WritingTool):
             written_text = parsed_text
         return written_text
 
-
     def sharpen(self):
         if self.length <= 0:
             print("Can't sharpen this pencil. It is too short.")
@@ -195,4 +205,3 @@ class PencilAndEraser(Pencil, Eraser):
         else:
             edited_text = start_phrase + complete_edited_string + remainder_text
         return edited_text
-
