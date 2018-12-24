@@ -31,7 +31,7 @@ def action(selection, current_pencil, current_paper):
         else:
             pass
     elif not current_pencil:
-        current_pencil == create_or_select_pencil()
+        current_pencil == create_a_pencil()
     elif not current_paper:
         current_paper == create_or_select_paper()
     else:
@@ -57,19 +57,66 @@ def show_stats(current_pencil):
     return current_pencil
 
 
-
-    pass
+@click.command()
+def create_a_pencil():
+    pencil_id = None
+    while pencil_id is None:
+        click.echo("Creating New Pencil and Eraser")
+        click.echo("==============================")
+        click.echo()
+        click.echo("Give this pencil an identifier (name): ")
+        pencil_id = click.getchar()
+        click.echo("Assign pencil durability: ")
+        pencil_durability = click.getchar()
+        click.echo("Length of pencil: ")
+        pencil_length = click.getchar()
+        click.echo("Assign Eraser Durability: ")
+        eraser_durability = click.getchar()
+        click.echo("{} pencil will be created with {} durability, {} eraser durability, \ "
+               "and {} length.".format(pencil_id, pencil_durability, eraser_durability, pencil_length))
+        proceed = click.getchar("Is this correct? Y/n")
+        if proceed == "Y":
+            pencil_id = PencilAndEraser(pencil_durability, pencil_length, eraser_durability)
+    return pencil_id
 
 
 @click.command()
-def create_or_select_pencil(current_pencil):
-    pass
+def create_or_select_paper():
+    current_paper = None
+    while paper_id is None:
+        click.echo("Creating or Select Paper file")
+        click.echo("==============================")
+        click.echo()
+        click.echo("Find existing paper? (Y/n): ")
+        open_paper = click.getchar()
+        if open_paper in ['Y', 'y']:
+            paper_name = click.getchar("Please type the name of the paper file: ")
+        else:
+            paper_name = click.getchar("Please type a name for the paper file: ")
+        current_paper = paper.find_file(paper_name)
+        if current_paper != paper_name:
+            print("Something went wrong, created a new paper named {}".format(current_paper))
+    return current_paper
 
-
-@click.command()
-def create_or_select_paper(current_pencil):
-    pass
-
+def action(selection, current_pencil, current_paper):
+    if current_pencil is not None and current_paper is not None:
+        if selection == 'write':
+            current_pencil = current_pencil.write_text()
+        elif selection == 'erase':
+            current_pencil = current_pencil.erase()
+        elif selection == 'edit':
+            current_pencil = current_pencil.edit()
+        elif selection == 'show_stats':
+            show_stats(current_pencil)
+        else:
+            pass
+    elif not current_pencil:
+        current_pencil == create_a_pencil()
+    elif not current_paper:
+        current_paper == create_or_select_paper()
+    else:
+        pass
+    return current_pencil, current_paper
 
 @click.command()
 def show_menu():
@@ -97,13 +144,16 @@ def show_menu():
             click.echo()
             click.echo('====================================================')
             selection = click.getchar()
-            for select_key, option_val in main_menu:
-                if selection in select_key:
-                    menu = option_val
-                elif selection in ['X', 'x']:
-                    exit(0)
-                else:
-                    click.echo('You selected {} - which is not an option. Please try again'.format(selection))
+            if selection in [b'X', b'x']:
+                exit(0)
+            else:
+                for select_key, option_val in main_menu.items():
+                    if selection in select_key:
+                        menu = option_val
+                    elif selection in ['X', 'x']:
+                        exit(0)
+                    else:
+                        click.echo('You selected {} - which is not an option. Please try again'.format(selection))
         elif menu == 'text_menu':
             click.echo('Pencil Simulator - Writing Menu - Please make a selection')
             click.echo('=======================================================')
@@ -115,13 +165,14 @@ def show_menu():
             click.echo('Using pencil {}'.format(current_pencil))
             click.echo('=======================================================')
             selection = click.getchar()
-            for select_key, option_val in main_menu:
-                if select_key in ['B', 'b']:
-                    menu = main_menu
-                if selection in select_key:
-                    current_pencil, current_paper = action(option_val, current_pencil, current_paper)
-                else:
-                    click.echo('You selected {} - which is not an option. Please try again'.format(selection))
+            if select_key in [b'B', b'b']:
+                menu = main_menu
+            else:
+                for select_key, option_val in main_menu.items():
+                    if selection in select_key:
+                        current_pencil, current_paper = action(option_val, current_pencil, current_paper)
+                    else:
+                        click.echo('You selected {} - which is not an option. Please try again'.format(selection))
         elif menu == 'paper_menu':
             click.echo('Pencil Simulator - Paper Menu - Please make a selection')
             click.echo('=======================================================')
@@ -134,8 +185,8 @@ def show_menu():
             click.echo('Using paper {}'.format(current_paper))
             click.echo('=======================================================')
             selection = click.getchar()
-            for select_key, option_val in paper_menu:
-                if select_key in ['B', 'b']:
+            for select_key, option_val in paper_menu.items():
+                if select_key in [b'B', b'b']:
                     menu = main_menu
                 elif selection in select_key:
                     current_pencil, current_paper = action(option_val, current_pencil, current_paper)
@@ -163,49 +214,17 @@ def show_menu():
 
 
 @click.command()
-def pencil_cli():
+def main():
     """
-        The pencil cli tool can be called these modes   \n
-        =============================================   \n
-        "write" -   simulates writing text to paper     \n
-                    lines wrap at 80 characters         \n
-                    "ENTER" key adds text to buffer     \n
-                    "ESC" key brings up menu options    \n
-                                                        \n
-        "erase" -   removes specified characters in the \n
-                    active buffer(default) or when a    \n
-                    a file is specified that the user is\n
-                    owner or has permission, allows     \n
-                    characters to be erased from the    \n
-                                                        \n
-        "edit"  -   writes text over a buffer of text or\n
-                    specified file. Character entered is\n
-                    parsed as the character if the user \n
-                    selects a location which is either a\n
-                    space, or extends the EOF. Editing  \n
-                    over existing text produces an "@"  \n
-                                                        \n
-        "stats" -   prints out statistics for the active\n
-                    session\'s pencil \n
-                                                        \n
-        "create"-   create a new pencil with or without \n
-                    an eraser \n
-                                                        \n
-        "read"  -   prints the contents of the active   \n
-                    buffer or specified file. \n
-                         
-                                                        \n
-        "quit"  -   quits the program \n"""
+        The pencil cli tool is a menu driven pencil simulator.
+        It should be called with no arguments.
+    """
 
     # print the banner
+    banner()
     while True:
-        banner()
-        selection = menu()
-        print(selection)
-        if selection == str(7):
-            print("Thanks for using Pencil Simulator 3000")
-            exit(0)
+        show_menu()
 
 
 if __name__ == '__main__':
-    pencil_cli()
+    main()
