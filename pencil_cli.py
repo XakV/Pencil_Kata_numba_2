@@ -72,8 +72,7 @@ def create_a_pencil():
         pencil_length = click.getchar()
         click.echo("Assign Eraser Durability: ")
         eraser_durability = click.getchar()
-        click.echo("{} pencil will be created with {} durability, {} eraser durability, \ "
-               "and {} length.".format(pencil_id, pencil_durability, eraser_durability, pencil_length))
+        click.echo("{} pencil will be created with {} durability, {} eraser durability, and {} length.".format(pencil_id, pencil_durability, eraser_durability, pencil_length))
         proceed = click.getchar("Is this correct? Y/n")
         if proceed == "Y":
             pencil_id = PencilAndEraser(pencil_durability, pencil_length, eraser_durability)
@@ -99,31 +98,27 @@ def create_or_select_paper():
     return current_paper
 
 def action(selection, current_pencil, current_paper):
-    if current_pencil is not None and current_paper is not None:
-        if selection == 'write':
-            current_pencil = current_pencil.write_text()
-        elif selection == 'erase':
-            current_pencil = current_pencil.erase()
-        elif selection == 'edit':
-            current_pencil = current_pencil.edit()
-        elif selection == 'show_stats':
-            show_stats(current_pencil)
-        else:
-            pass
-    elif not current_pencil:
+    if current_pencil is None:
         current_pencil == create_a_pencil()
-    elif not current_paper:
+    if current_paper is None:
         current_paper == create_or_select_paper()
+    if selection == 'write':
+        current_pencil = current_pencil.write_text()
+    elif selection == 'erase':
+        current_pencil = current_pencil.erase()
+    elif selection == 'edit':
+        current_pencil = current_pencil.edit()
+    elif selection == 'show_stats':
+        show_stats(current_pencil)
     else:
         pass
     return current_pencil, current_paper
 
 @click.command()
 def show_menu():
+    menu = 'main'
     current_pencil = None
     current_paper = None
-    action = None
-    menu = 'main'
     main_menu = {'T': 'text_menu', 't': 'text_menu',
                  'O': 'paper_menu', 'o': 'paper_menu',
                  'S': 'stats_menu', 's': 'stats_menu'}
@@ -144,16 +139,12 @@ def show_menu():
             click.echo()
             click.echo('====================================================')
             selection = click.getchar()
-            if selection in [b'X', b'x']:
+            if selection in ['X', 'x']:
                 exit(0)
+            elif selection in main_menu.keys():
+                menu = main_menu[selection]
             else:
-                for select_key, option_val in main_menu.items():
-                    if selection in select_key:
-                        menu = option_val
-                    elif selection in ['X', 'x']:
-                        exit(0)
-                    else:
-                        click.echo('You selected {} - which is not an option. Please try again'.format(selection))
+                click.echo('You selected {} - which is not an option. Please try again'.format(selection))
         elif menu == 'text_menu':
             click.echo('Pencil Simulator - Writing Menu - Please make a selection')
             click.echo('=======================================================')
@@ -165,14 +156,12 @@ def show_menu():
             click.echo('Using pencil {}'.format(current_pencil))
             click.echo('=======================================================')
             selection = click.getchar()
-            if select_key in [b'B', b'b']:
+            if selection in ['B', 'b']:
                 menu = main_menu
+            elif selection in text_menu.keys():
+                current_pencil, current_paper = action(text_menu[selection], current_pencil, current_paper)
             else:
-                for select_key, option_val in main_menu.items():
-                    if selection in select_key:
-                        current_pencil, current_paper = action(option_val, current_pencil, current_paper)
-                    else:
-                        click.echo('You selected {} - which is not an option. Please try again'.format(selection))
+                click.echo('You selected {} - which is not an option. Please try again'.format(selection))
         elif menu == 'paper_menu':
             click.echo('Pencil Simulator - Paper Menu - Please make a selection')
             click.echo('=======================================================')
@@ -185,13 +174,12 @@ def show_menu():
             click.echo('Using paper {}'.format(current_paper))
             click.echo('=======================================================')
             selection = click.getchar()
-            for select_key, option_val in paper_menu.items():
-                if select_key in [b'B', b'b']:
-                    menu = main_menu
-                elif selection in select_key:
-                    current_pencil, current_paper = action(option_val, current_pencil, current_paper)
-                else:
-                    click.echo('You selected {} - which is not an option. Please try again'.format(selection))
+            if selection in ['B', 'b']:
+                menu = main_menu
+            elif selection in paper_menu.keys():
+                current_pencil, current_paper = action(paper_menu[selection], current_pencil, current_paper)
+            else:
+                click.echo('You selected {} - which is not an option. Please try again'.format(selection))
         elif menu == 'stats_menu':
             click.echo('Pencil Simulator - Stats - Please make a selection')
             click.echo('=======================================================')
@@ -202,13 +190,12 @@ def show_menu():
             click.echo('Using pencil {}'.format(current_pencil))
             click.echo('=======================================================')
             selection = click.getchar()
-            for select_key, option_val in main_menu:
-                if select_key in ['B', 'b']:
-                    menu = main_menu
-                elif select_key in ['V', 'v']:
-                    current_pencil, current_paper = action(option_val, current_pencil)
-                else:
-                    click.echo('You selected {} - which is not an option. Please try again'.format(selection))
+            if selection in ['B', 'b']:
+                menu = main_menu
+            elif selection in ['V', 'v']:
+                current_pencil = action('show_stats', current_pencil)
+            else:
+                click.echo('You selected {} - which is not an option. Please try again'.format(selection))
         else:
             continue
 
