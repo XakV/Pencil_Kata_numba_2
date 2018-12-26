@@ -26,13 +26,13 @@ def open_file(filename):
         print("Accessing file: {}".format(filename))
     elif not posixpath.exists(filename):
         with open(filename, 'a') as try_file:
-            try_file.write()
+            try_file.write('')
     else:
         print("Could not create file, generating a random file name.")
         filename = random_file()
         print("Generated random filename is {}".format(filename))
         with open(filename, 'a') as rand_file:
-            rand_file.write()
+            rand_file.write('')
     return filename
 
 
