@@ -44,7 +44,7 @@ class Eraser(WritingTool):
         WritingTool.__init__(self, durability)
         self.eraser_durability = durability
 
-    def erase(self, original_string, substring_to_erase):
+    def erase(self, filename, original_string, substring_to_erase):
         erased_string = ''
         for character in substring_to_erase:
             self.degrade_writing_tool(character)
@@ -54,7 +54,8 @@ class Eraser(WritingTool):
             else:
                 character = ' '
             erased_string += character
-        erase_location = original_string.rfind(substring_to_erase)
+        opened_file = paper.open_file(filename)
+        erase_location = paper.find_text_in_file(opened_file, substring_to_erase)
         string_before_erase = original_string[:erase_location]
         len_of_erase = len(substring_to_erase)
         original_string_len = len(original_string)
@@ -62,7 +63,8 @@ class Eraser(WritingTool):
             string_after_erase = string_before_erase + erased_string
         else:
             string_after_erase = string_before_erase + erased_string + original_string[(erase_location + len_of_erase):]
-        return string_after_erase
+        erased_file = paper.put_text(opened_file, string_after_erase)
+        return erased_file
 
 
 class Pencil(WritingTool):
@@ -72,7 +74,7 @@ class Pencil(WritingTool):
         self.upper_case_character_wear = 2
         self.starting_durability = self.durability
 
-    def write_text(self, existing_text=None, text_to_write=None):
+    def write_text(self, filename, existing_text=None, text_to_write=None):
         parsed_text = ''
         for character in text_to_write:
             self.degrade_writing_tool(character)
@@ -82,11 +84,16 @@ class Pencil(WritingTool):
             else:
                 character = character
             parsed_text = parsed_text + character
+        file_with_existing_text = paper.open_file(filename)
+        with open(file_with_existing_text, 'r+') as text_file:
+            existing_text = text_file.read()
         if existing_text is not None:
             written_text = existing_text + parsed_text
         else:
             written_text = parsed_text
-        return written_text
+        with open(file_with_existing_text, 'w') as write_to_file:
+            written_file = write_to_file.write(written_text)
+        return written_file
 
     def sharpen(self):
         if self.length <= 0:
@@ -106,10 +113,13 @@ class PencilAndEraser(Pencil, Eraser):
         WritingTool.__init__(self, durability=pencil_durability)
         self.eraser_durability = eraser_durability
 
-    def edit(self, initial_text, erased_word, erased_text, replacement_text):
-        begin_replace = initial_text.rfind(erased_word)
-        phrase_to_edit = erased_text[begin_replace:]
-        remainder_text = initial_text[(begin_replace + len(replacement_text)):]
+    def edit(self, filename, word_to_erase, replacement_text):
+        with open(filename, 'r') as file_to_edit:
+            existing_text = file_to_edit.read()
+        if existing_text is not None:
+            begin_replace = paper.find_text_in_file(filename, word_to_erase)
+        phrase_to_edit = existing_text[begin_replace:]
+        remainder_text = existing_text[(begin_replace + len(replacement_text)):]
         written_replacement_text = self.write_text(None, replacement_text)
         edit_dict = zip(list(phrase_to_edit), list(written_replacement_text))
         complete_edited_string = ''.join(replace_chardict_with_char_list(edit_dict))
@@ -118,4 +128,5 @@ class PencilAndEraser(Pencil, Eraser):
             edited_text = start_phrase + complete_edited_string
         else:
             edited_text = start_phrase + complete_edited_string + remainder_text
-        return edited_text
+        filename = paper.put_text(filename, edited_text)
+        return filename

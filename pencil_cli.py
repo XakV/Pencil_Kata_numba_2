@@ -18,22 +18,47 @@ def banner():
              ''')
 
 
+def draw_user_interface(action, current_paper):
+    pretty_action = action[0].upper() + action[0:]
+    click.echo()
+    click.echo("=============================================")
+    click.echo("{} text on paper {}".format(pretty_action, current_paper))
+    click.echo("=============================================")
+    click.echo("Enter text to {} with pencil: ".format(action))
+    click.echo()
+    text_to_action = click.get_text_stream('stdin')
+    return text_to_action
+
 def action(selection, current_pencil, current_paper):
-    if current_pencil is not None and current_paper is not None:
-        if selection == 'write':
-            current_pencil = current_pencil.write_text()
-        elif selection == 'erase':
-            current_pencil = current_pencil.erase()
-        elif selection == 'edit':
-            current_pencil = current_pencil.edit()
-        elif selection == 'show_stats':
-            show_stats(current_pencil)
+    if not current_pencil:
+        current_pencil = create_a_pencil()
+    if not current_paper:
+        current_paper = create_or_select_paper()
+    with open(current_paper, 'r') as read_paper:
+        text = read_paper.read()
+    click.echo("Text in current file is: ")
+    click.echo()
+    click.echo(text)
+    if selection == 'write':
+        text_to_write = draw_user_interface(action, current_paper)
+        current_pencil = current_pencil.write_text(text, text_to_write)
+    elif selection == 'erase':
+        text_to_erase = draw_user_interface(action, current_paper)
+        if text_to_erase in text:
+            current_pencil = current_pencil.erase(current_paper, text, text_to_erase)
         else:
-            pass
-    elif not current_pencil:
-        current_pencil == create_a_pencil()
-    elif not current_paper:
-        current_paper == create_or_select_paper()
+            print("Your selection does not exist in the current paper.")
+    elif selection == 'edit':
+        text_to_edit = draw_user_interface(action, current_paper)
+        click.echo("Enter text to replace with pencil: ")
+        click.echo()
+        text_to_replace = click.get_text_stream('stdin')
+        if text_to_edit in text:
+            current_pencil = current_pencil.edit(current_paper, text_to_edit, text_to_replace)
+        else:
+            print("Your selection does not exist in the current_paper.")
+    elif selection == 'show_stats':
+        show_stats(current_pencil)
     else:
         pass
     return current_pencil, current_paper
@@ -67,11 +92,11 @@ def create_a_pencil():
         click.echo("Give this pencil an identifier (name): ")
         pencil_id = click.get_text_stream('stdin')
         click.echo("Assign pencil durability: ")
-        pencil_durability = int(click.get_text_stream('stdin'))
+        pencil_durability = click.get_text_stream('stdin')
         click.echo("Length of pencil: ")
-        pencil_length = int(click.get_text_stream('stdin'))
+        pencil_length = click.get_text_stream('stdin')
         click.echo("Assign Eraser Durability: ")
-        eraser_durability = int(click.get_text_stream('stdin'))
+        eraser_durability = click.get_text_stream('stdin')
         click.echo("{} pencil will be created with {} durability, {} eraser durability, and {} length.".format(pencil_id, pencil_durability, eraser_durability, pencil_length))
         proceed = click.getchar("Is this correct? Y/n")
         if proceed in ["Y", "y"]:
@@ -98,36 +123,6 @@ def create_or_select_paper():
             print("Something went wrong, created a new paper named {}".format(current_paper))
     return current_paper
 
-
-def action(selection, current_pencil, current_paper):
-    if current_pencil is None:
-        current_pencil == create_a_pencil()
-    if current_paper is None:
-        current_paper == create_or_select_paper()
-    existing_text = paper.get_text(current_paper)
-    if selection == 'write':
-        click.echo("Please enter text you wish to write:")
-        click.echo()
-        text_to_write = click.get_text_stream('stdin')
-        current_pencil = current_pencil.write_text(existing_text, text_to_write)
-    elif selection == 'erase':
-        click.echo("This file contains the following text.")
-        click.echo("======================================")
-        click.echo(existing_text)
-        click.echo("=======================================")
-        click.echo()
-        click.echo("Please enter the text to be erased")
-        erase_text = click.get_text_stream('stdin')
-        if erase_text not in existing_text:
-            print("Your selection does not exist.")
-        current_pencil = current_pencil.erase()
-    elif selection == 'edit':
-        current_pencil = current_pencil.edit()
-    elif selection == 'show_stats':
-        show_stats(current_pencil)
-    else:
-        pass
-    return current_pencil, current_paper
 
 @click.command()
 def show_menu():
