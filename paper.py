@@ -17,7 +17,7 @@ def random_file():
     min_characters = 4
     maximum_characters = 20
     allchar = string.ascii_letters + string.digits
-    random_filename = "/tmp/" + "".join(choice(allchar) for x in range(randint(min_characters, maximum_characters)))
+    random_filename = "".join(choice(allchar) for x in range(randint(min_characters, maximum_characters))) + ".tmp"
     return random_filename
 
 
@@ -39,8 +39,8 @@ def open_file(filename):
 def find_text_in_file(filename, string_to_find):
     if os.access(filename, 6):
         with open(filename, 'r') as find_text:
-            search_string = find_text.read()
-        begin_string_location = search_string.rfind(string_to_find)
+            all_file_text = find_text.read()
+        begin_string_location = all_file_text.rfind(string_to_find)
         if begin_string_location in [None, '', -1]:
             print("String - {} - not found".format(string_to_find))
     else:
